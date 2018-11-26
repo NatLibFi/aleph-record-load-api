@@ -7,7 +7,7 @@ $ curl -L -XPOST \
 -u "$API_KEY:" \
 -H 'Content-Type: text/plain' \
 --data-binary @records.seq \
-"https://foo.bar/aleph-load-record-api/?library=FOO&method=NEW&fixRoutine=BAR&cataloger=$CATALOGER"
+"https://foo.bar/aleph-record-load-api/?library=FOO&method=NEW&fixRoutine=BAR&cataloger=$CATALOGER"
 ["000000001FOO", "000000001FOO"]
 ```
 ### Environment variables
@@ -32,7 +32,7 @@ $ curl -L -XPOST \
 |indexingPriority|No||Override indexing priority|
 ### Example Apache configuration block
 ```
-<Directory "/exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-load-record-api">
+<Directory "/exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api">
   Options ExecCGI FollowSymLinks  
   AddHandler cgi-script .cgi
   DirectoryIndex index.cgi
