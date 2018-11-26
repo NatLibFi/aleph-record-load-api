@@ -26,7 +26,7 @@ from base64 import b64decode
 
 API_KEYS = re.split(',', os.getenv('API_KEYS'))
 LOAD_COMMAND = os.getenv('LOAD_COMMAND')
-ALEPH_DIR = os.getenv('ALEPH_DIR')
+ALEPH_VERSION = os.getenv('ALEPH_VERSION')
 PARAMETERS = [
   'library',
   'method',
@@ -43,15 +43,25 @@ PARAMETERS = [
 
 def main():
   if os.getenv('REQUEST_METHOD') != 'POST':
-    error(405)
+    error(405)  
 
   authenticate()
   params = parse_params()
   check_params(set_default_params(params))  
-  [id_list, err] = execute(params, sys.stdin.read())
+  [stdout, stderr] = execute(params, sys.stdin.read())
 
-  if err:
-    error(400, err)
+  if stderr:
+    error(500, stderr)
+    remove_files(params)
+  
+  errors = get_errors(params['library'], params['rejectedFile'])
+
+  if errors:
+    remove_files(params)
+    error(400, errors)
+
+  id_list = get_id_list(params['logFile'])
+  #remove_files(params)
 
   if id_list:
     print 'Content-Type: application/json'
@@ -59,9 +69,7 @@ def main():
     print
     print json.dumps(id_list)
   else:
-    print 'Status: 200'
-    print
-    
+    error(500, stdout)    
 
 def authenticate(): 
   if 'HTTP_AUTHORIZATION' in os.environ and os.getenv('HTTP_AUTHORIZATION'):
@@ -109,23 +117,53 @@ def check_params(params):
       error(400, 'Parameter {} is missing'.format(param))
 
 def execute(params, payload):
+  input_file = '/exlibris/aleph/u{}/{}/scratch/{}'.format(ALEPH_VERSION, params['library'], params['inputFile'])
   values = [
+    params['library'],
     params['inputFile'],
     params['rejectedFile'],
     params['logFile'],
+    params['method'],
     params['fixRoutine'],
+    '',
     params['indexing'],
     params['updateAction'],
     params['mode'],
     params['charConversion'],
     params['mergeRoutine'],
+    params['cataloger'],
     params['catalogerLevel'],
     params['indexingPriority']
   ]
 
-  command = '{} {}'.format(LOAD_COMMAND, ','.join(values))
-  sys.stderr.write(command)
-  sys.exit()
+  f = open(input_file, 'w')
+  f.write(payload)
+  f.close()
+
+  p = subprocess.Popen(['/usr/bin/env', 'csh'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+  p.stdin.write('source /exlibris/aleph/a{}/alephm/.cshrc\n'.format(ALEPH_VERSION))
+  p.stdin.write('{} {}\n'.format(LOAD_COMMAND, ','.join(values)))
+  p.stdin.write('exit\n')
+ 
+  (stdout, stderr) = p.communicate()
+  return (stdout, stderr)
+
+def get_errors(library, filename):
+  f = open('/exlibris/aleph/u{}/{}/scratch/{}'.format(ALEPH_VERSION, library, filename), 'r')
+  errors = f.read()
+  f.close()
+  return errors
+
+def get_id_list(filename):
+  f = open('/exlibris/aleph/u{}/alephe/scratch/{}'.format(ALEPH_VERSION, filename), 'r')
+  id_list = f.read().splitlines()
+  f.close()   
+  return id_list
+
+def remove_files(p):
+  os.unlink('/exlibris/aleph/u{}/alephe/scratch/{}'.format(ALEPH_VERSION, p['logFile']))
+  os.unlink('/exlibris/aleph/u{}/{}/scratch/{}'.format(ALEPH_VERSION, p['library'], p['rejectedFile']))
+  os.unlink('/exlibris/aleph/u{}/{}/scratch/{}'.format(ALEPH_VERSION, p['library'], p['inputFile']))
 
 def error(code, message=''):
   print 'Status: {}'.format(str(code))
