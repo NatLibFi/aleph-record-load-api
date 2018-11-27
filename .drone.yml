@@ -1,9 +1,7 @@
-#branches: [master, test]
 branches: [feature-drone]
 matrix:
   include:
   - HOST: libtest1.csc.fi
-    FOO: bar
     USER: aleph
     DIRECTORY: /exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api/app
     TAR_EXEC: /usr/sfw/bin/gtar
@@ -22,7 +20,6 @@ pipeline:
     - source: ssh_key_${HOST}
       target: ssh_key
     when:
-      #branch: test
       branch: feature-drone
       matrix:
         INSTANCE: test
