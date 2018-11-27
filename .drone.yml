@@ -1,4 +1,4 @@
-branches: feature-drone
+branches: 'feature-drone'
 #branches: [master, test]
 matrix:
   include:
