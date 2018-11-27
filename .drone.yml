@@ -1,4 +1,3 @@
-branches: [test, master, feature-drone]
 matrix:
   include:
   - HOST: libtest1.csc.fi
@@ -20,7 +19,6 @@ pipeline:
     - source: ssh_key_${HOST}
       target: ssh_key
     when:
-      branch: feature-drone
       matrix:
         INSTANCE: test
 # Production
