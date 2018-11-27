@@ -25,7 +25,7 @@ pipeline:
       matrix:
         INSTANCE: test
 # Production
-  prod-deploy
+  prod-deploy:
     image: quay.io/natlibfi/drone-plugin-scp
     host: ${HOST}
     username: ${USER}
