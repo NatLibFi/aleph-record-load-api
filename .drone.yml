@@ -1,4 +1,4 @@
-branches [test, master, feature-drone]
+branches: [test, master, feature-drone]
 matrix:
   include:
   - HOST: libtest1.csc.fi
