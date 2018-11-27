@@ -1,4 +1,4 @@
-branches: 'feature-drone'
+branches: feature-drone
 #branches: [master, test]
 matrix:
   include:
@@ -22,9 +22,10 @@ pipeline:
       target: ssh_key
 #    when:
 #      branch: test
-#      matrix:
-#        INSTANCE: test
+      matrix:
+        INSTANCE: test
 # Production
+  prod-deploy
     image: quay.io/natlibfi/drone-plugin-scp
     host: ${HOST}
     username: ${USER}
