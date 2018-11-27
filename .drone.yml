@@ -1,4 +1,3 @@
-branches: [feature-drone]
 matrix:
   include:
   - HOST: libtest1.csc.fi
