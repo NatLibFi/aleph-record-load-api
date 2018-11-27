@@ -1,5 +1,4 @@
-branches: feature-drone
-#branches: [master, test]
+branches: [master, test]
 matrix:
   include:
   - HOST: libtest1.csc.fi
@@ -14,14 +13,14 @@ pipeline:
     host: ${HOST}
     username: ${USER}
     target: ${DIRECTORY}
-    source: ['*']
+    source: ['']
     rm: true
     tar_exec: ${TAR_EXEC}    
     secrets:
     - source: ssh_key_${HOST}
       target: ssh_key
-#    when:
-#      branch: test
+    when:
+      branch: test
       matrix:
         INSTANCE: test
 # Production
