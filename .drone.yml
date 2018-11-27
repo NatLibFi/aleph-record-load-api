@@ -1,10 +1,11 @@
-branches: [master, test]
+#branches: [master, test]
+branches: [feature-drone]
 matrix:
   include:
   - HOST: libtest1.csc.fi    
     USER: aleph
     DIRECTORY: /exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api/app
-    TAR_EXEC: tar
+    TAR_EXEC: /usr/sfw/bin/gtar
     INSTANCE: test
 pipeline:
 # Test
@@ -13,41 +14,27 @@ pipeline:
     host: ${HOST}
     username: ${USER}
     target: ${DIRECTORY}
+    source: ['.']
     rm: true
     tar_exec: ${TAR_EXEC}    
     secrets:
     - source: ssh_key_${HOST}
       target: ssh_key
     when:
-      branch: test
-      matrix:
-        INSTANCE: test
-  test-start:
-    image: quay.io/natlibfi/drone-plugin-ssh
-    host: ${HOST}
-    username: ${USER}
-    script:
-    - /bin/bash -c '${DIRECTORY}/bin/aleph_replication.sh start'
-    secrets:
-    - source: ssh_key_${HOST}_${USER}
-      target: ssh_key
-    when:
-      branch: test
+      #branch: test
+      branch: feature-drone
       matrix:
         INSTANCE: test
 # Production
-  prod-deploy:
     image: quay.io/natlibfi/drone-plugin-scp
     host: ${HOST}
     username: ${USER}
     target: ${DIRECTORY}
+    source: ['.']
     rm: true
-    tar_exec: ${TAR_EXEC}
-    source:
-    - lib
-    - bin
+    tar_exec: ${TAR_EXEC}    
     secrets:
-    - source: ssh_key_${HOST}_${USER}
+    - source: ssh_key_${HOST}
       target: ssh_key
     when:
       branch: master
