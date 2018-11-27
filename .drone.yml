@@ -13,7 +13,7 @@ pipeline:
     host: ${HOST}
     username: ${USER}
     target: ${DIRECTORY}
-    source: ['']
+    source: ['.']
     rm: true
     tar_exec: ${TAR_EXEC}    
     secrets:
