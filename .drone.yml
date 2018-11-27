@@ -1,4 +1,5 @@
 branches: feature-drone
+#branches: [master, test]
 matrix:
   include:
   - HOST: libtest1.csc.fi
@@ -19,10 +20,10 @@ pipeline:
     secrets:
     - source: ssh_key_${HOST}
       target: ssh_key
-    when:
-      branch: feature-drone
-      matrix:
-        INSTANCE: test
+#    when:
+#      branch: test
+#      matrix:
+#        INSTANCE: test
 # Production
     image: quay.io/natlibfi/drone-plugin-scp
     host: ${HOST}
