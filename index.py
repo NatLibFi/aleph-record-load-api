@@ -61,7 +61,7 @@ def main():
     error(400, errors)
 
   id_list = get_id_list(params['logFile'])
-  #remove_files(params)
+  remove_files(params)
 
   if id_list:
     print 'Content-Type: application/json'
