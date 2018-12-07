@@ -77,7 +77,7 @@ def authenticate():
     api_key = re.split(':', b64decode(encoded))[0]
 
     if (api_key not in API_KEYS):
-      error(403)
+      error(401)
   else:
     error(401)
 
