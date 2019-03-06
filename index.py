@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 '''
-Copyright 2018 University Of Helsinki (The National Library Of Finland)
+Copyright 2018-2019 University Of Helsinki (The National Library Of Finland)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,9 +21,12 @@ import sys
 import json
 import subprocess
 import re
+from os import unlink
+from os.path import exists as file_exists
 from uuid import uuid4
 from base64 import b64decode
 
+LOCKFILE_PATH = os.getenv('LOCKFILE_PATH')
 API_KEYS = re.split(',', os.getenv('API_KEYS'))
 LOAD_COMMAND = os.getenv('LOAD_COMMAND')
 ALEPH_VERSION = os.getenv('ALEPH_VERSION')
@@ -47,7 +50,7 @@ def main():
 
   authenticate()
   params = parse_params()
-  check_params(set_default_params(params))  
+  check_params(set_default_params(params))
   [stdout, stderr] = execute(params, sys.stdin.read())
 
   if stderr:
@@ -136,6 +139,8 @@ def execute(params, payload):
     params['indexingPriority']
   ]
 
+  handle_lock(payload, params['mode'])
+
   f = open(input_file, 'w')
   f.write(payload)
   f.close()
@@ -146,7 +151,31 @@ def execute(params, payload):
   p.stdin.write('exit\n')
  
   (stdout, stderr) = p.communicate()
+  remove_lock()
+
   return (stdout, stderr)
+
+def handle_lock(data, mode):
+  def get_record_id():
+    return data[0:9] if mode == 'OLD' else '0'
+
+  def get_lock_id():
+    file = open(LOCKFILE_PATH)
+    id = file.read()
+    file.close()
+    return id
+    
+  id = get_record_id()
+
+  if file_exists(LOCKFILE_PATH) and get_lock_id() == id:    
+      error(409, 'Lockfile exists')
+
+  file = open(LOCKFILE_PATH, mode='w')
+  file.write(id)
+  file.close()
+
+def remove_lock():
+  unlink(LOCKFILE_PATH)
 
 def get_errors(library, filename):
   f = open('/exlibris/aleph/u{}/{}/scratch/{}'.format(ALEPH_VERSION, library, filename), 'r')
