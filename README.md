@@ -16,6 +16,8 @@ $ curl -L -XPOST \
 |ALEPH_VERSION|Yes|Version of the Aleph instance, i.e. *23_3*|
 |LOAD_COMMAND|Yes|Path of the record load command, i.e. */exlibris/aleph/a23_3/proc/p_manage_18*|
 |API_KEYS|Yes|A comma-separated list of API keys which are authorized to use the API|
+|LOCKFILE_PATH|Yes|Path to the lock file which is created to prevent simultaneous updates to the same record or parallel creation of new records
+|OFFLINE_HOURS|No|Range of hours when the service is offline. Format is `{START_HOUR-END_HOUR}`, e.g. `00-06`
 ### Query parameters
 |Name|Mandatory|Default value|Description|
 | --- | --- | --- | --- |
@@ -45,6 +47,7 @@ $ curl -L -XPOST \
   SetEnv ALEPH_VERSION 23_3
   SetEnv LOAD_COMMAND /exlibris/aleph/a23_3/aleph/proc/p_manage_18
   SetEnv API_KEYS <API_KEYS>
+  SetEnv LOCKFILE_PATH /exlibris/aleph/u23_3/alephe/scratch/manage18_lock
 </Directory>
 ```
 ### Using a different Python parser (index.cgi)
