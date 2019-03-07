@@ -21,12 +21,14 @@ import sys
 import json
 import subprocess
 import re
+from datetime import datetime
 from os import unlink
 from os.path import exists as file_exists
 from uuid import uuid4
 from base64 import b64decode
 
 LOCKFILE_PATH = os.getenv('LOCKFILE_PATH')
+(OFFLINE_START_HOUR, OFFLINE_END_HOUR) = os.getenv('OFFLINE_HOURS').split('-')
 API_KEYS = re.split(',', os.getenv('API_KEYS'))
 LOAD_COMMAND = os.getenv('LOAD_COMMAND')
 ALEPH_VERSION = os.getenv('ALEPH_VERSION')
@@ -47,6 +49,8 @@ PARAMETERS = [
 def main():
   if os.getenv('REQUEST_METHOD') != 'POST':
     error(405)  
+
+  check_offline_hours()
 
   authenticate()
   params = parse_params()
@@ -73,6 +77,11 @@ def main():
     print json.dumps(id_list)
   else:
     error(500, stdout)    
+
+def check_offline_hours():
+  current_hour = int(datetime.now().strftime('%H'))
+  if current_hour >= int(OFFLINE_START_HOUR) and current_hour < int(OFFLINE_END_HOUR):
+    error(503)
 
 def authenticate(): 
   if 'HTTP_AUTHORIZATION' in os.environ and os.getenv('HTTP_AUTHORIZATION'):
