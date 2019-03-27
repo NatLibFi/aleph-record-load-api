@@ -21,14 +21,14 @@ import sys
 import json
 import subprocess
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, time
 from os import unlink
 from os.path import exists as file_exists
 from uuid import uuid4
 from base64 import b64decode
 
 LOCKFILE_PATH = os.getenv('LOCKFILE_PATH')
-(OFFLINE_START_HOUR, OFFLINE_END_HOUR) = os.getenv('OFFLINE_HOURS').split('-')
+(OFFLINE_START_HOUR, OFFLINE_LENGTH_HOURS) = os.getenv('OFFLINE_PERIOD', ',').split(',')
 API_KEYS = re.split(',', os.getenv('API_KEYS'))
 LOAD_COMMAND = os.getenv('LOAD_COMMAND')
 ALEPH_VERSION = os.getenv('ALEPH_VERSION')
@@ -79,9 +79,20 @@ def main():
     error(500, stdout)    
 
 def check_offline_hours():
-  current_hour = int(datetime.now().strftime('%H'))
-  if current_hour >= int(OFFLINE_START_HOUR) and current_hour < int(OFFLINE_END_HOUR):
-    error(503)
+  if OFFLINE_START_HOUR and OFFLINE_LENGTH_HOURS:
+    start_hour = int(OFFLINE_START_HOUR)
+    length_hours = int(OFFLINE_LENGTH_HOURS)  
+    now = datetime.now()
+
+    if int(now.hour) < start_hour:
+      start = datetime.combine(now - timedelta(days=1), time(start_hour))
+    else:
+      start = datetime.combine(now, time(start_hour))
+  
+    end = start + timedelta(hours=length_hours)
+  
+    if now >= start and now < end: 
+      error(503)
 
 def authenticate(): 
   if 'HTTP_AUTHORIZATION' in os.environ and os.getenv('HTTP_AUTHORIZATION'):
