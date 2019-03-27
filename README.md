@@ -17,7 +17,8 @@ $ curl -L -XPOST \
 |LOAD_COMMAND|Yes|Path of the record load command, i.e. */exlibris/aleph/a23_3/proc/p_manage_18*|
 |API_KEYS|Yes|A comma-separated list of API keys which are authorized to use the API|
 |LOCKFILE_PATH|Yes|Path to the lock file which is created to prevent simultaneous updates to the same record or parallel creation of new records
-|OFFLINE_HOURS|No|Range of hours when the service is offline. Format is `{START_HOUR-END_HOUR}`, e.g. `00-06`
+|OFFLINE_PERIOD|No|Starting hour and length of offline period. Format is `{START_HOUR,LENGTH_IN_HOURS}`, e.g. `00,6`
+
 ### Query parameters
 |Name|Mandatory|Default value|Description|
 | --- | --- | --- | --- |
