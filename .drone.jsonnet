@@ -28,6 +28,6 @@ local Pipeline(name, branch="master") = {
 };
 
 [
-  #Pipeline("production"),
+  Pipeline("production"),
   Pipeline("test", branch="test")
 ]

@@ -1,5 +1,35 @@
 ---
 kind: pipeline
+name: production
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  image: quay.io/natlibfi/drone-plugin-scp
+  settings:
+    host:
+      from_secret: host_production
+    key:
+      from_secret: ssh_key_production
+    rm: true
+    source:
+    - "*.py"
+    tar_exec: /usr/sfw/bin/gtar
+    target: /exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api/app
+    username:
+      from_secret: username_production
+
+trigger:
+  branch:
+  - master
+  event:
+  - push
+
+---
+kind: pipeline
 name: test
 
 platform:
