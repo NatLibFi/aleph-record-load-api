@@ -50,6 +50,8 @@ def main():
   if os.getenv('REQUEST_METHOD') != 'POST':
     error(405)  
 
+  sys.stderr.write('Aleph test log works! FOO!')
+
   check_offline_hours()
 
   authenticate()
