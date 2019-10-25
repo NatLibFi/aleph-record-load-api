@@ -188,14 +188,15 @@ def handle_lock(data, mode):
   id = get_record_id()
 
   if file_exists(LOCKFILE_PATH) and get_lock_id() == id:    
-      error(409, 'Lockfile exists')
+    error(409, 'Lockfile exists')
 
   file = open(LOCKFILE_PATH, mode='w')
   file.write(id)
   file.close()
 
 def remove_lock():
-  unlink(LOCKFILE_PATH)
+  if file_exists(LOCKFILE_PATH):
+    unlink(LOCKFILE_PATH)
 
 def get_errors(library, filename):
   f = open('/exlibris/aleph/u{}/{}/scratch/{}'.format(ALEPH_VERSION, library, filename), 'r')
