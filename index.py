@@ -174,12 +174,12 @@ def execute(params, payload):
   remove_lock(payload, params['mode'])
 
   return (stdout, stderr)
+  
+def get_record_id(data, mode):
+  return data[0:9] if mode == 'OLD' else '0'
 
 def handle_lock(data, mode):
-  def get_record_id():
-    return data[0:9] if mode == 'OLD' else '0'
-    
-  id = get_record_id()
+  id = get_record_id(data, mode)
   lockfile_full_path = LOCKFILE_PATH + '.' + id
 
   if file_exists(lockfile_full_path)    
@@ -188,10 +188,7 @@ def handle_lock(data, mode):
   file = open(lockfile_full_path,"x")
 
 def remove_lock(data, mode):
-  def get_record_id():
-    return data[0:9] if mode == 'OLD' else '0'
-  
-  id = get_record_id()
+  id = get_record_id(data, mode)
   lockfile_full_path = LOCKFILE_PATH + '.' + id
 
   if file_exists(lockfile_full_path):
