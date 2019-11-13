@@ -171,7 +171,7 @@ def execute(params, payload):
   p.stdin.write('exit\n')
  
   (stdout, stderr) = p.communicate()
-  remove_lock()
+  remove_lock(payload, params['mode'])
 
   return (stdout, stderr)
 
@@ -187,7 +187,13 @@ def handle_lock(data, mode):
 
   file = open(lockfile_full_path,"x")
 
-def remove_lock():
+def remove_lock(data, mode):
+  def get_record_id():
+    return data[0:9] if mode == 'OLD' else '0'
+  
+  id = get_record_id()
+  lockfile_full_path = LOCKFILE_PATH + '.' + id
+
   if file_exists(lockfile_full_path):
     unlink(lockfile_full_path)
 
