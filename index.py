@@ -188,7 +188,6 @@ def handle_lock(id):
   file = open(lockfile_full_path,"x")
 
 def remove_lock(id):
-  id = get_record_id(data, mode)
   lockfile_full_path = LOCKFILE_PATH + '.' + id
 
   if file_exists(lockfile_full_path):
