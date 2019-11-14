@@ -159,8 +159,8 @@ def execute(params, payload):
     params['indexingPriority']
   ]
 
-  record_id = get_record_id(payload, params['mode'])
-  handle_lock(record_id)
+  lockfile_full_path = get_record_id(payload, params['mode'])
+  handle_lock(lockfile_full_path)
 
   f = open(input_file, 'w')
   f.write(payload)
@@ -172,24 +172,21 @@ def execute(params, payload):
   p.stdin.write('exit\n')
  
   (stdout, stderr) = p.communicate()
-  remove_lock(record_id)
+  remove_lock(lockfile_full_path)
 
   return (stdout, stderr)
   
-def get_record_id(data, mode):
-  return data[0:9] if mode == 'OLD' else '0'
+def get_lockfile_full_path(data, mode):
+  id = data[0:9] if mode == 'OLD' else '0'
+  return LOCKFILE_PATH + '.' + id
 
-def handle_lock(id):
-  lockfile_full_path = LOCKFILE_PATH + '.' + id
-
+def handle_lock(lockfile_full_path):
   if file_exists(lockfile_full_path)    
     error(409, 'Lockfile exists')
 
   file = open(lockfile_full_path,"x")
 
-def remove_lock(id):
-  lockfile_full_path = LOCKFILE_PATH + '.' + id
-
+def remove_lock(lockfile_full_path):
   if file_exists(lockfile_full_path):
     unlink(lockfile_full_path)
 
