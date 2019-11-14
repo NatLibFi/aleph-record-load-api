@@ -159,7 +159,7 @@ def execute(params, payload):
     params['indexingPriority']
   ]
 
-  lockfile_full_path = get_record_id(payload, params['mode'])
+  lockfile_full_path = get_lockfile_full_path(payload, params['mode'])
   handle_lock(lockfile_full_path)
 
   f = open(input_file, 'w')
