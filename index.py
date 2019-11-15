@@ -48,7 +48,7 @@ PARAMETERS = [
 
 def main():
   if os.getenv('REQUEST_METHOD') != 'POST':
-    error(405)  
+    error(405)
 
   check_offline_hours()
 
@@ -60,7 +60,7 @@ def main():
   if stderr:
     error(500, stderr)
     remove_files(params)
-  
+
   errors = get_errors(params['library'], params['rejectedFile'])
 
   if errors:
@@ -76,25 +76,25 @@ def main():
     print
     print json.dumps(id_list)
   else:
-    error(500, stdout)    
+    error(500, stdout)
 
 def check_offline_hours():
   if OFFLINE_START_HOUR and OFFLINE_LENGTH_HOURS:
     start_hour = int(OFFLINE_START_HOUR)
-    length_hours = int(OFFLINE_LENGTH_HOURS)  
+    length_hours = int(OFFLINE_LENGTH_HOURS)
     now = datetime.now()
 
     if int(now.hour) < start_hour:
       start = datetime.combine(now - timedelta(days=1), time(start_hour))
     else:
       start = datetime.combine(now, time(start_hour))
-  
+
     end = start + timedelta(hours=length_hours)
-  
-    if now >= start and now < end: 
+
+    if now >= start and now < end:
       error(503)
 
-def authenticate(): 
+def authenticate():
   if 'HTTP_AUTHORIZATION' in os.environ and os.getenv('HTTP_AUTHORIZATION'):
     encoded = re.sub('^Basic ', '', os.getenv('HTTP_AUTHORIZATION'))
     api_key = re.split(':', b64decode(encoded))[0]
@@ -109,7 +109,7 @@ def parse_params():
 
   if os.getenv('QUERY_STRING'):
     str = os.getenv('QUERY_STRING').split('?')[0]
-  
+
     for param in str.split('&'):
       [key, value] = param.split('=')
       params[key] = value
@@ -118,7 +118,7 @@ def parse_params():
 
 def set_default_params(p):
   id = str(uuid4()).replace('-', '')
-  
+
   p['inputFile'] = '{}.seq'.format(id)
   p['rejectedFile'] = '{}.rej'.format(id)
   p['logFile'] = '{}.log'.format(id)
@@ -170,18 +170,18 @@ def execute(params, payload):
   p.stdin.write('source /exlibris/aleph/a{}/alephm/.cshrc\n'.format(ALEPH_VERSION))
   p.stdin.write('{} {}\n'.format(LOAD_COMMAND, ','.join(values)))
   p.stdin.write('exit\n')
- 
+
   (stdout, stderr) = p.communicate()
   remove_lock(lockfile_full_path)
 
   return (stdout, stderr)
-  
+
 def get_lockfile_full_path(data, mode):
   id = data[0:9] if mode == 'OLD' else '0'
   return LOCKFILE_PATH + '.' + id
 
 def handle_lock(lockfile_full_path):
-  if file_exists(lockfile_full_path)    
+  if file_exists(lockfile_full_path):
     error(409, 'Lockfile exists')
 
   file = open(lockfile_full_path,"x")
@@ -199,7 +199,7 @@ def get_errors(library, filename):
 def get_id_list(filename):
   f = open('/exlibris/aleph/u{}/alephe/scratch/{}'.format(ALEPH_VERSION, filename), 'r')
   id_list = f.read().splitlines()
-  f.close()   
+  f.close()
   return id_list
 
 def remove_files(p):
