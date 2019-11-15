@@ -184,7 +184,8 @@ def handle_lock(lockfile_full_path):
   if file_exists(lockfile_full_path):
     error(409, 'Lockfile exists')
 
-  file = open(lockfile_full_path,"x")
+  file = open(lockfile_full_path,"w")
+  file.close()
 
 def remove_lock(lockfile_full_path):
   if file_exists(lockfile_full_path):
