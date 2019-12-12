@@ -11,38 +11,38 @@ $ curl -L -XPOST \
 ["000000001FOO", "000000001FOO"]
 ```
 ### Environment variables
-|Name|Mandatory|Description|
-| --- | --- | --- |
-|ALEPH_VERSION|Yes|Version of the Aleph instance, i.e. *23_3*|
-|LOAD_COMMAND|Yes|Path of the record load command, i.e. */exlibris/aleph/a23_3/proc/p_manage_18*|
-|API_KEYS|Yes|A comma-separated list of API keys which are authorized to use the API|
-|LOCKFILE_PATH|Yes|Path to the lock file which is created to prevent simultaneous updates to the same record or parallel creation of new records
-|OFFLINE_PERIOD|No|Starting hour and length of offline period. Format is `{START_HOUR,LENGTH_IN_HOURS}`, e.g. `00,6`
+| Name           | Mandatory | Description                                                                                                                   |
+|----------------|-----------|-------------------------------------------------------------------------------------------------------------------------------|
+| ALEPH_VERSION  | Yes       | Version of the Aleph instance, i.e. *23_3*                                                                                    |
+| LOAD_COMMAND   | Yes       | Path of the record load command, i.e. */exlibris/aleph/a23_3/proc/p_manage_18*                                                |
+| API_KEYS       | Yes       | A comma-separated list of API keys which are authorized to use the API                                                        |
+| LOCKFILE_PATH  | Yes       | Path to the lock file which is created to prevent simultaneous updates to the same record or parallel creation of new records |
+| OFFLINE_PERIOD | No        | Starting hour and length of offline period. Format is `{START_HOUR,LENGTH_IN_HOURS}`, e.g. `00,6`                             |
 
 ### Query parameters
-|Name|Mandatory|Default value|Description|
-| --- | --- | --- | --- |
-|library|Yes||Library to use|
-|method|Yes||Method of operation. Either *NEW* or *OLD*|
-|cataloger|Yes||Value which is written to *CAT* fields|
-|fixRoutine|No||Fix routine to use|
-|indexing|No|FULL|Indexing action|
-|updateAction|No|APP|Update action|
-|mode|No|M|User mode. Either *M* (Multi-user) or *S* (Single-user)|
-|charConversion|No||Character conversion to apply|
-|mergeRoutine|No||Merge/Preferred routine|
-|catalogerLevel|No||Cataloger lever|
-|indexingPriority|No||Override indexing priority|
+| Name             | Mandatory | Default value | Description                                             |
+|------------------|-----------|---------------|---------------------------------------------------------|
+| library          | Yes       |               | Library to use                                          |
+| method           | Yes       |               | Method of operation. Either *NEW* or *OLD*              |
+| cataloger        | Yes       |               | Value which is written to *CAT* fields                  |
+| fixRoutine       | No        |               | Fix routine to use                                      |
+| indexing         | No        | FULL          | Indexing action                                         |
+| updateAction     | No        | APP           | Update action                                           |
+| mode             | No        | M             | User mode. Either *M* (Multi-user) or *S* (Single-user) |
+| charConversion   | No        |               | Character conversion to apply                           |
+| mergeRoutine     | No        |               | Merge/Preferred routine                                 |
+| catalogerLevel   | No        |               | Cataloger lever                                         |
+| indexingPriority | No        |               | Override indexing priority                              |
 ### Example Apache configuration block
 ```
 <Directory "/exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api">
-  Options ExecCGI FollowSymLinks  
+  Options ExecCGI FollowSymLinks
   AddHandler cgi-script .cgi
   DirectoryIndex index.cgi
-  AddDefaultCharset UTF-8  
-  
+  AddDefaultCharset UTF-8
+
   RewriteEngine on
-  RewriteCond %{HTTP:Authorization} ^(.*)   
+  RewriteCond %{HTTP:Authorization} ^(.*)
   RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 
   SetEnv ALEPH_VERSION 23_3
