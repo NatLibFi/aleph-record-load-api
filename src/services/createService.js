@@ -14,8 +14,8 @@ const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export function createRecord(payload, params) {
 	logger.log('info', 'createService: createRecord');
-	// Write logs
-	// do error file
+	// TODO: Write logs
+	// TODO: error file
 
 	try {
 		// Check if OLD OR NEW
@@ -36,7 +36,7 @@ export function createRecord(payload, params) {
 			// Create lockfile
 			writeToFile(fullLockPath, id, true);
 
-			// Do input file
+			// Write input file
 			writeToFile(params.inputFile, payload, true);
 
 			const values = [
@@ -59,7 +59,7 @@ export function createRecord(payload, params) {
 
 			// SHELL this uses sh or dash not sure... old was csh
 			// Load basic env's usr/bin/env
-			// TODO CHANGE load custom env variables /exlibris/aleph/a{}/alephm/.cshrc
+			// Load custom env variables /exlibris/aleph/a{}/alephm/.cshrc
 			// Run load_command with argument
 			// Close shell
 			// MORE INFO: https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
@@ -74,7 +74,7 @@ export function createRecord(payload, params) {
 			// Remove lockfile
 			deleteFile(fullLockPath);
 			if (params.QUEUEID) {
-				// Send QUEUEID back
+				// Send QUEUEID back to notify prio job client
 			}
 
 			return {status: HttpStatus.OK, message: httpStatus['200_MESSAGE'], id};

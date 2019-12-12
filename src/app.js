@@ -20,7 +20,7 @@ process.on('SIGINT', () => {
 run();
 
 async function run() {
-	logger.log('Record-load-api: node version starting')
+	logger.log('info', 'Record-load-api: node version starting');
 
 	const ipFilterList = JSON.parse(IP_FILTER).map(rule => new RegExp(rule));
 	const app = express();
@@ -33,7 +33,7 @@ async function run() {
 
 	app.use(handleError);
 
-	app.listen(HTTP_PORT, () => logger.log(`Record-load-api listening on port ${HTTP_PORT}!`));
+	app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api listening on port ${HTTP_PORT}!`));
 
 	function handleError(err, req, res, next) {
 		if (res.headersSent) {
