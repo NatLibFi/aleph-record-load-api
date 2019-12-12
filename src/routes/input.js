@@ -14,8 +14,6 @@ const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export default async () => {
-	// TODO: AuthService as middleware -> listen post
-	// TODO: Payload handling..? FILE? JSON?
 	return new Router()
 		.post('/:queryString', handleInput)
 		.use((err, req, res, next) => {

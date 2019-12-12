@@ -34,8 +34,8 @@ export function setAndCheckDefaultParams(opts) {
 	}
 
 	// Constructing params Json
-	const inputFile = util.format(TEMP_FILE_PATH, ALEPH_VERSION, opts.library, id, '.seq');
-	const rejectedFile = util.format(TEMP_FILE_PATH, ALEPH_VERSION, opts.library, id, '.rej');
+	const inputFile = util.format(TEMP_FILE_PATH, ALEPH_VERSION, temp.library, id, '.seq');
+	const rejectedFile = util.format(TEMP_FILE_PATH, ALEPH_VERSION, temp.library, id, '.rej');
 	const logFile = util.format(LOG_FILE_PATH, ALEPH_VERSION, id + '.log');
 	const params = {
 		library: temp.library,
