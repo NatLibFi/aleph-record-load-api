@@ -26,9 +26,9 @@ export function setAndCheckDefaultParams(opts) {
 
 	// Temporary unique file ID
 	let id;
-	if (temp.QUEUEID) { // Backwards compatibility
+	if (temp.QUEUEID) {
 		id = temp.QUEUEID.replace(/-/g, '');
-	} else {
+	} else { // Backwards compatibility
 		id = uuid.v4();
 		id = id.replace(/-/g, '');
 	}

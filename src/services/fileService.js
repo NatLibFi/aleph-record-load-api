@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import fs from 'fs';
 import path from 'path';
 
@@ -10,12 +8,12 @@ const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export function writeToFile(location, content, createFolders = false) {
 	const fileLoc = path.resolve(location);
-	logger.log('info', `writeToFile: fileLoc ${fileLoc}, content ${content}`);
-
+	logger.log('info', `writeToFile: fileLoc ${fileLoc}`);
+	logger.log('debug', `writeToFile: content ${content}`);
 	try {
 		if (createFolders) {
 			const folders = fileLoc.substring(0, fileLoc.lastIndexOf('/'));
-			fs.mkdirSync(folders, {recursive: true}); // Permissions 755
+			fs.mkdirSync(folders, {recursive: true}); // Permissions 755 needed?
 			logger.log('debug', 'writeToFile: Folders created');
 		}
 
@@ -23,7 +21,7 @@ export function writeToFile(location, content, createFolders = false) {
 		logger.log('debug', 'writeToFile: Write success');
 	} catch (err) {
 		logger.log('debug', 'writeToFile: Write error');
-		logError(err);
+		logError(err); // Should be writen in *.rej file?
 	}
 }
 
@@ -36,7 +34,7 @@ export function deleteFile(location) {
 		logger.log('debug', 'deleteFile: File deleted!');
 	} catch (err) {
 		logger.log('error', 'deleteFile: Error while tryed delete file!');
-		logError(err);
+		logError(err); // Should be writen in *.rej file?
 	}
 }
 
@@ -51,6 +49,33 @@ export function checkIfExists(location) {
 		return true;
 	} catch (err) {
 		logger.log('debug', 'checkIfExists: File not found');
+		logError(err); // Should be writen in *.rej file?
 		return false;
 	}
+}
+
+export function readFile(location, listStyle = false) {
+	const fileLoc = path.resolve(location);
+	logger.log('info', `readFile: fileLoc ${fileLoc}`);
+
+	try {
+		const content = fs.readFileSync(fileLoc);
+
+		logger.log('debug', 'readFile: File readed');
+		if (listStyle) {
+			return content.split(/\r?\n/);
+		}
+
+		return content;
+	} catch (err) {
+		logger.log('debug', 'readFile: Error while reading file');
+		logError(err); // Should be writen in *.rej file?
+		return false;
+	}
+}
+
+export function clearFiles(fileLocList) {
+	fileLocList.forEach(fileLoc => {
+		deleteFile(fileLoc);
+	});
 }

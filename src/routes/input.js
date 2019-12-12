@@ -1,13 +1,9 @@
-/* eslint-disable no-unused-vars */
-import express, {Router} from 'express';
+import {Router} from 'express';
 import ServiceError from '../services/error';
 import {setAndCheckDefaultParams} from '../utils';
+import {clearFiles, checkIfExists, readFile} from '../services/fileService';
 import {createRecord} from '../services/createService';
 import HttpStatus from 'http-status';
-
-import {
-	ALEPH_VERSION, LOAD_COMMAND, LOCKFILE_PATH
-} from '../config';
 
 import {Utils} from '@natlibfi/melinda-commons';
 const {createLogger} = Utils;
@@ -24,7 +20,7 @@ export default async () => {
 			}
 		});
 
-	async function handleInput(req, res, next) {
+	async function handleInput(req, res) {
 		logger.log('info', 'input router: handleInput');
 
 		const params = setAndCheckDefaultParams(req.params.queryString);
@@ -33,11 +29,26 @@ export default async () => {
 			const payload = req.body;
 			const response = createRecord(payload, params);
 
+			if (checkIfExists(params.rejectedFile)) {
+				res.status(HttpStatus.BAD_REQUEST).send(HttpStatus['400_MESSAGE']).end();
+				clearFiles([params.inputFile, params.logFile]); // Leave error file?
+			}
+
+			// Get new id/s
+			const id = readFile(params.logFile, true);
+			if (id) {
+				response.id = id;
+			} else {
+				res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(HttpStatus['500_MESSAGE']).end();
+			}
+
 			// TODO: remove files
 			if (response.status === 200) {
-				res.status(response.status).json(response).end();
+				res.status(response.status).json(response.id).end();
+				clearFiles([params.inputFile, params.rejectedFile, params.logFile]);
 			} else {
 				res.status(response.status).send(response.message).end();
+				clearFiles([params.inputFile, params.rejectedFile, params.logFile]);
 			}
 		} else {
 			res.status(HttpStatus.BAD_REQUEST).send(HttpStatus['400_MESSAGE']).end();

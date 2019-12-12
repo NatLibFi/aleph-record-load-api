@@ -1,6 +1,4 @@
-/* eslint-disable no-unused-vars */
-
-import {validateID} from '../utils';
+import {validateID, logError} from '../utils';
 import {LOCKFILE_PATH, LOAD_COMMAND, ALEPH_VERSION} from '../config';
 import {writeToFile, checkIfExists, deleteFile} from './fileService';
 import {execSync} from 'child_process';
@@ -14,8 +12,6 @@ const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export function createRecord(payload, params) {
 	logger.log('info', 'createService: createRecord');
-	// TODO: Write logs
-	// TODO: error file
 
 	try {
 		// Check if OLD OR NEW
@@ -29,6 +25,7 @@ export function createRecord(payload, params) {
 		if (!id) {
 			return {status: HttpStatus.UNPROCESSABLE_ENTITY, message: httpStatus['422_MESSAGE'], id};
 		}
+		// TODO: If OLD collect lines where 9 digits in the begining are same and process them individually
 
 		// Check lockfile
 		const fullLockPath = util.format(LOCKFILE_PATH, ALEPH_VERSION, id);
@@ -67,21 +64,20 @@ export function createRecord(payload, params) {
                 . /exlibris/aleph/a${ALEPH_VERSION}/alephm/.cshrc
                 ${LOAD_COMMAND} ${values}
                 exit`;
-			const exTemp = 'echo \'createService -> BASH -> CHANGE THIS TO exLoadCommand!\'';
-
-			execSync(exTemp, {stdio: 'inherit'});
+			execSync(exLoadCommand, {stdio: 'inherit'});
 
 			// Remove lockfile
 			deleteFile(fullLockPath);
 			if (params.QUEUEID) {
-				// Send QUEUEID back to notify prio job client
+				return {status: HttpStatus.OK, message: httpStatus['200_MESSAGE'], id: [], QUEUEID: params.QUEUEID};
 			}
 
-			return {status: HttpStatus.OK, message: httpStatus['200_MESSAGE'], id};
+			return {status: HttpStatus.OK, message: httpStatus['200_MESSAGE'], id: []};
 		}
 
 		return {status: HttpStatus.CONFLICT, message: httpStatus['409_MESSAGE']};
 	} catch (err) {
+		logError(err);
 		return {status: HttpStatus.INTERNAL_SERVER_ERROR, message: httpStatus['500_MESSAGE']};
 	}
 }
