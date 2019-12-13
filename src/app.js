@@ -1,7 +1,7 @@
 import express from 'express';
 import {Utils} from '@natlibfi/melinda-commons';
 import HttpStatus from 'http-status';
-import {createWhitelistMiddleware, createAuthMiddleware} from './services/authService';
+import {createWhitelistMiddleware, createAuthMiddleware, createOfflineHoursMiddleware} from './services/middlewareService';
 import bodyParser from 'body-parser';
 
 import {createInputRouter} from './routes';
@@ -24,6 +24,7 @@ async function run() {
 	const app = express();
 
 	app.use(createExpressLogger());
+	app.use(createOfflineHoursMiddleware());
 	app.use(createWhitelistMiddleware(ipFilterList));
 	app.use(createAuthMiddleware());
 	app.use(bodyParser.text({limit: '5MB', type: '*/*'}));

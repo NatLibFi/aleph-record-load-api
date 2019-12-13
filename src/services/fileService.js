@@ -63,7 +63,7 @@ export function readFile(location, listStyle = false) {
 
 		logger.log('debug', 'readFile: File readed');
 		if (listStyle) {
-			return content.split(/\r?\n/);
+			return content.toString().split(/\r?\n/g);
 		}
 
 		return content;

@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import ServiceError from '../services/error';
 import {setAndCheckDefaultParams} from '../utils';
-import {clearFiles, checkIfExists, readFile} from '../services/fileService';
+import {clearFiles, checkIfExists, readFile} from '../services/fileService'; // eslint-disable-line no-unused-vars
 import {createRecord} from '../services/createService';
 import HttpStatus from 'http-status';
 
@@ -29,23 +29,22 @@ export default async () => {
 			const payload = req.body;
 			const response = createRecord(payload, params);
 
-			if (checkIfExists(params.rejectedFile)) {
-				res.status(HttpStatus.BAD_REQUEST).send(HttpStatus['400_MESSAGE']).end();
-				clearFiles([params.inputFile, params.logFile]); // Leave error file?
-			}
+			await Promise.all([response]);
 
-			// Get new id/s
-			const id = readFile(params.logFile, true);
-			if (id) {
-				response.id = id;
-			} else {
-				res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(HttpStatus['500_MESSAGE']).end();
-			}
-
-			// TODO: remove files
 			if (response.status === 200) {
-				res.status(response.status).json(response.id).end();
-				clearFiles([params.inputFile, params.rejectedFile, params.logFile]);
+				if (checkIfExists(params.rejectedFile)) {
+					clearFiles([params.inputFile, params.logFile]); // Leave error file?
+					res.status(HttpStatus.BAD_REQUEST).send(HttpStatus['400_MESSAGE']).end();
+				} else {
+					// Get new id/s
+					const ids = readFile(params.logFile, true);
+					if (ids) {
+						res.status(response.status).json({ids, QUEUEID: params.QUEUEID}).end(); // Returning QUEUEID if given in parametters, used in notifying priority queue client
+						clearFiles([params.inputFile, params.rejectedFile, params.logFile]);
+					} else {
+						res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(HttpStatus['500_MESSAGE']).end();
+					}
+				}
 			} else {
 				res.status(response.status).send(response.message).end();
 				clearFiles([params.inputFile, params.rejectedFile, params.logFile]);

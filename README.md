@@ -7,32 +7,42 @@ $ curl -L -XPOST \
 -u "$API_KEY:" \
 -H 'Content-Type: text/plain' \
 --data-binary @records.seq \
-"https://foo.bar/aleph-record-load-api/?library=FOO&method=NEW&fixRoutine=BAR&cataloger=$CATALOGER"
+"https://foo.bar/aleph-record-load-api/library=FOO&method=NEW&fixRoutine=BAR&cataloger=$CATALOGER"
 ["000000001FOO", "000000001FOO"]
 ```
 ### Environment variables
-| Name           | Mandatory | Description                                                                                                                   |
-|----------------|-----------|-------------------------------------------------------------------------------------------------------------------------------|
-| ALEPH_VERSION  | Yes       | Version of the Aleph instance, i.e. *23_3*                                                                                    |
-| LOAD_COMMAND   | Yes       | Path of the record load command, i.e. */exlibris/aleph/a23_3/proc/p_manage_18*                                                |
-| API_KEYS       | Yes       | A comma-separated list of API keys which are authorized to use the API                                                        |
-| LOCKFILE_PATH  | Yes       | Path to the lock file which is created to prevent simultaneous updates to the same record or parallel creation of new records |
-| OFFLINE_PERIOD | No        | Starting hour and length of offline period. Format is `{START_HOUR,LENGTH_IN_HOURS}`, e.g. `00,6`                             |
+| Name             | Mandatory | Description                                                                                                                   | String formating* |
+|------------------|-----------|-------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| ALEPH_VERSION    | Yes       | Version of the Aleph instance, i.e. *23_3*                                                                                    | No                |
+| API_KEYS         | Yes       | A comma-separated list of API keys which are authorized to use the API                                                        | No                |
+| OFFLINE_PERIOD   | No        | Starting hour and length of offline period. Format is `{START_HOUR,LENGTH_IN_HOURS}`, e.g. `00,6`                             | No                |
+| LOAD_COMMAND     | Yes       | Path of the record load command,                                                                                              | Yes               |
+|                  |           | i.e. */exlibris/aleph/a%s/aleph/proc/p_manage_18* (version)                                                                   |                   |
+| LOAD_COMMAND_ENV | Yes       | path of the enviromental variable file for record load command,                                                               | Yes               |
+|                  |           | i.e. */exlibris/aleph/a%s/alephm/.cshrc* (version)                                                                            |                   |
+| LOCKFILE_PATH    | Yes       | Path of the lock file which is created to prevent simultaneous updates to the same record or parallel creation of new records | Yes               |
+|                  |           | i.e. */exlibris/aleph/u%s/alephe/scratch/manage_18_lockfile.%s* (version, id)                                                 |                   |
+| TEMP_FILE_PATH   | Yes       | Path of the temporay input data file and error log file,                                                                          | Yes               |
+|                  |           | i.e. */exlibris/aleph/u%s/%s/scratch/record-load-api/%s%s* (version, library, filename, filetype)                             |                   |
+| LOG_FILE_PATH    | Yes       | Path of the input operation log file,                                                                                             | Yes               |
+|                  |           | i.e. */exlibris/aleph/u%s/alephe/scratch/record-load-api/* (version, file)                                                    |                   |
+*Formate values are shown as %s and explanations can be found in () in order.
 
 ### Query parameters
-| Name             | Mandatory | Default value | Description                                             |
-|------------------|-----------|---------------|---------------------------------------------------------|
-| library          | Yes       |               | Library to use                                          |
-| method           | Yes       |               | Method of operation. Either *NEW* or *OLD*              |
-| cataloger        | Yes       |               | Value which is written to *CAT* fields                  |
-| fixRoutine       | No        |               | Fix routine to use                                      |
-| indexing         | No        | FULL          | Indexing action                                         |
-| updateAction     | No        | APP           | Update action                                           |
-| mode             | No        | M             | User mode. Either *M* (Multi-user) or *S* (Single-user) |
-| charConversion   | No        |               | Character conversion to apply                           |
-| mergeRoutine     | No        |               | Merge/Preferred routine                                 |
-| catalogerLevel   | No        |               | Cataloger lever                                         |
-| indexingPriority | No        |               | Override indexing priority                              |
+| Name             | Mandatory | Default value | Description                                                  |
+|------------------|-----------|---------------|--------------------------------------------------------------|
+| library          | Yes       |               | Library to use                                               |
+| method           | Yes       |               | Method of operation. Either *NEW* or *OLD*                   |
+| cataloger        | Yes       |               | Value which is written to *CAT* fields                       |
+| fixRoutine       | No        |               | Fix routine to use                                           |
+| indexing         | No        | FULL          | Indexing action                                              |
+| updateAction     | No        | APP           | Update action                                                |
+| mode             | No        | M             | User mode. Either *M* (Multi-user) or *S* (Single-user)      |
+| charConversion   | No        |               | Character conversion to apply                                |
+| mergeRoutine     | No        |               | Merge/Preferred routine                                      |
+| catalogerLevel   | No        |               | Cataloger lever                                              |
+| indexingPriority | No        |               | Override indexing priority                                   |
+| QUEUEID          | No        |               | Used to notify client when priority queued record is created |
 ### Example Apache configuration block
 ```
 <Directory "/exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api">
@@ -46,9 +56,12 @@ $ curl -L -XPOST \
   RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 
   SetEnv ALEPH_VERSION 23_3
-  SetEnv LOAD_COMMAND /exlibris/aleph/a23_3/aleph/proc/p_manage_18
   SetEnv API_KEYS <API_KEYS>
-  SetEnv LOCKFILE_PATH /exlibris/aleph/u23_3/alephe/scratch/manage18_lock
+  SetEnv LOAD_COMMAND /exlibris/aleph/a%s/aleph/proc/p_manage_18
+  SetEnv LOAD_COMMAND_ENV /exlibris/aleph/a%s/alephm/.cshrc
+  SetEnv LOCKFILE_PATH /exlibris/aleph/u%s/alephe/scratch/manage_18_lockfile.
+  SetEnv TEMP_FILE_PATH /exlibris/aleph/u%s/%s/scratch/record-load-api/%s%s
+  SetEnv LOG_FILE_PATH /exlibris/aleph/u%s/alephe/scratch/record-load-api/
 </Directory>
 ```
 ### Using a different Python parser (index.cgi)

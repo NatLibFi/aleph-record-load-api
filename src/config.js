@@ -5,11 +5,11 @@ const {readEnvironmentVariable, parseBoolean} = Utils;
 
 // General
 export const ALEPH_VERSION = readEnvironmentVariable('ALEPH_VERSION', {defaultValue: '23_3'});
-export const LOAD_COMMAND = readEnvironmentVariable('LOAD_COMMAND', {defaultValue: '/LOAD-COMMAND-LOCATION-HERE/'});
-export const OFFLINE_PERIOD = readEnvironmentVariable('ALEPH_VERSION', {defaultValue: {start: 0, length: 0}});
+export const LOAD_COMMAND = readEnvironmentVariable('LOAD_COMMAND', {defaultValue: '/LOAD-COMMAND-PATH-HERE/'});
+export const LOAD_COMMAND_ENV = readEnvironmentVariable('LOAD_COMMAND_ENV', {defaultValue: 'LOAD-COMMAND-ENV-PATH-HERE'});
+export const OFFLINE_PERIOD = readEnvironmentVariable('OFFLINE_PERIOD', {defaultValue: '{"start": 0, "duration": 0}'});
 
 // Files
-export const LOCKFILE_PATH = readEnvironmentVariable('LOCKFILE_PATH', {defaultValue: '/LOCKFILE-PATH-HERE/manage_18_lockfile'});
 export const TEMP_FILE_PATH = readEnvironmentVariable('TEMP_FILE_PATH', {defaultValue: '/INPUT-FILE-PATH-HERE/'});
 export const LOG_FILE_PATH = readEnvironmentVariable('LOG_FILE_PATH', {defaultValue: '/LOG_FILE_PATH-HERE/'});
 

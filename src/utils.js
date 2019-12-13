@@ -24,19 +24,12 @@ export function setAndCheckDefaultParams(opts) {
 		temp[key] = value;
 	});
 
-	// Temporary unique file ID
-	let id;
-	if (temp.QUEUEID) {
-		id = temp.QUEUEID.replace(/-/g, '');
-	} else { // Backwards compatibility
-		id = uuid.v4();
-		id = id.replace(/-/g, '');
-	}
-
 	// Constructing params Json
+	const id = uuid.v4().replace(/-/g, '');
 	const inputFile = util.format(TEMP_FILE_PATH, ALEPH_VERSION, temp.library, id, '.seq');
 	const rejectedFile = util.format(TEMP_FILE_PATH, ALEPH_VERSION, temp.library, id, '.rej');
 	const logFile = util.format(LOG_FILE_PATH, ALEPH_VERSION, id + '.log');
+
 	const params = {
 		library: temp.library,
 		method: temp.method,
@@ -51,7 +44,8 @@ export function setAndCheckDefaultParams(opts) {
 		charConversion: temp.charConversion || '',
 		mergeRoutine: temp.mergeRoutine || '',
 		catalogerLevel: temp.catalogerLevel || '',
-		indexingPriority: temp.indexingPriority || ''
+		indexingPriority: temp.indexingPriority || '',
+		QUEUEID: temp.QUEUEID || ''
 	};
 
 	// Validate that all needed variables are there
@@ -65,15 +59,6 @@ export function setAndCheckDefaultParams(opts) {
 
 	if (valid) {
 		return params;
-	}
-
-	return false;
-}
-
-export function validateID(id) {
-	logger.log('info', `Validating id ${id}!`);
-	if (/^\d{9}$/.test(id.trim())) {
-		return id;
 	}
 
 	return false;
