@@ -8,13 +8,12 @@ const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export function createOfflineHoursMiddleware() {
 	return (req, res, next) => {
-		const times = JSON.parse(OFFLINE_PERIOD);
-		logger.log('info', `Offline hours begin at ${times.start} and will last next ${times.duration} hours. Time is now ${moment().format('HH:mm')}`);
+		const times = OFFLINE_PERIOD.split(',');
+		logger.log('info', `Offline hours begin at ${times[0]} and will last next ${times[1]} hours. Time is now ${moment().format('HH:mm')}`);
 		const now = moment();
-		// Moment().hours() = 0-23
-		let start = moment(now).startOf('day').add(times.start, 'hours');
-		let end = moment(start).add(times.duration, 'hours');
-		if (now.hours() < times.start && start.format('DDD') < end.format('DDD')) { // Offline hours pass midnight
+		let start = moment(now).startOf('day').add(times[0], 'hours');
+		let end = moment(start).add(times[1], 'hours');
+		if (now.hours() < times[0] && start.format('DDD') < end.format('DDD')) { // Offline hours pass midnight (DDD = day of the year)
 			start.subtract(1, 'days');
 			end.subtract(1, 'days');
 		}

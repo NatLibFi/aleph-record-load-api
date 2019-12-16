@@ -11,21 +11,21 @@ $ curl -L -XPOST \
 ["000000001FOO", "000000001FOO"]
 ```
 ### Environment variables
-| Name             | Mandatory | Description                                                                                                                   | String formating* |
-|------------------|-----------|-------------------------------------------------------------------------------------------------------------------------------|-------------------|
-| ALEPH_VERSION    | Yes       | Version of the Aleph instance, i.e. *23_3*                                                                                    | No                |
-| API_KEYS         | Yes       | A comma-separated list of API keys which are authorized to use the API                                                        | No                |
-| OFFLINE_PERIOD   | No        | Starting hour and length of offline period. Format is `{START_HOUR,LENGTH_IN_HOURS}`, e.g. `00,6`                             | No                |
-| LOAD_COMMAND     | Yes       | Path of the record load command,                                                                                              | Yes               |
-|                  |           | i.e. */exlibris/aleph/a%s/aleph/proc/p_manage_18* (version)                                                                   |                   |
-| LOAD_COMMAND_ENV | Yes       | path of the enviromental variable file for record load command,                                                               | Yes               |
-|                  |           | i.e. */exlibris/aleph/a%s/alephm/.cshrc* (version)                                                                            |                   |
-| LOCKFILE_PATH    | Yes       | Path of the lock file which is created to prevent simultaneous updates to the same record or parallel creation of new records | Yes               |
-|                  |           | i.e. */exlibris/aleph/u%s/alephe/scratch/manage_18_lockfile.%s* (version, id)                                                 |                   |
-| TEMP_FILE_PATH   | Yes       | Path of the temporay input data file and error log file,                                                                          | Yes               |
-|                  |           | i.e. */exlibris/aleph/u%s/%s/scratch/record-load-api/%s%s* (version, library, filename, filetype)                             |                   |
-| LOG_FILE_PATH    | Yes       | Path of the input operation log file,                                                                                             | Yes               |
-|                  |           | i.e. */exlibris/aleph/u%s/alephe/scratch/record-load-api/* (version, file)                                                    |                   |
+| Name             | Mandatory | Description                                                                                       | String formating* |
+|------------------|-----------|---------------------------------------------------------------------------------------------------|-------------------|
+| ALEPH_VERSION    | Yes       | Version of the Aleph instance, e.g. *23_3*                                                        | No                |
+| LOAD_COMMAND     | Yes       | Path of the record load command,                                                                  | Yes               |
+|                  |           | e.g. */exlibris/aleph/a%s/aleph/proc/p_manage_18* (version)                                       |                   |
+| LOAD_COMMAND_ENV | Yes       | path of the enviromental variable file for record load command,                                   | Yes               |
+|                  |           | e.g. */exlibris/aleph/a%s/alephm/.cshrc* (version)                                                |                   |
+| API_KEYS         | Yes       | A comma-separated list of API keys which are authorized to use the API                            | No                |
+| HTTP_PORT        | No        | Http port that program will be listenning (Defaults to '3000')                                    | No                |
+| IP_FILTER        | No        | RegExp presentation of allowed IP addresses i.e. default value '["128.214.0.0/16"]'               | No                |
+| OFFLINE_PERIOD   | No        | Starting hour and length of offline period. Format is `{START_HOUR,LENGTH_IN_HOURS}`, e.g. '0,0'  | No                |
+| TEMP_FILE_PATH   | Yes       | Path of the temporay input data file and error log file,                                          | Yes               |
+|                  |           | e.g. */exlibris/aleph/u%s/%s/scratch/record-load-api/%s%s* (version, library, filename, filetype) |                   |
+| LOG_FILE_PATH    | Yes       | Path of the input operation log file,                                                             | Yes               |
+|                  |           | e.g. */exlibris/aleph/u%s/alephe/scratch/record-load-api/* (version, file)                        |                   |
 *Formate values are shown as %s and explanations can be found in () in order.
 
 ### Query parameters
@@ -43,6 +43,7 @@ $ curl -L -XPOST \
 | catalogerLevel   | No        |               | Cataloger lever                                              |
 | indexingPriority | No        |               | Override indexing priority                                   |
 | QUEUEID          | No        |               | Used to notify client when priority queued record is created |
+
 ### Example Apache configuration block
 ```
 <Directory "/exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api">
@@ -59,7 +60,7 @@ $ curl -L -XPOST \
   SetEnv API_KEYS <API_KEYS>
   SetEnv LOAD_COMMAND /exlibris/aleph/a%s/aleph/proc/p_manage_18
   SetEnv LOAD_COMMAND_ENV /exlibris/aleph/a%s/alephm/.cshrc
-  SetEnv LOCKFILE_PATH /exlibris/aleph/u%s/alephe/scratch/manage_18_lockfile.
+  SetEnv OFFLINE_PERIOD '{"start": 23, "duration": 3}'
   SetEnv TEMP_FILE_PATH /exlibris/aleph/u%s/%s/scratch/record-load-api/%s%s
   SetEnv LOG_FILE_PATH /exlibris/aleph/u%s/alephe/scratch/record-load-api/
 </Directory>
