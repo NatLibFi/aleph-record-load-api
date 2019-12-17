@@ -44,14 +44,14 @@ export function createRecord(payload, params) {
 					. ${LOAD_COMMAND_ENV.replace(/%s/g, ALEPH_VERSION)}
 					${LOAD_COMMAND.replace(/%s/g, ALEPH_VERSION)} ${values}
 					exit`;
-		execSync(exLoadCommand, {stdio: 'inherit'});
-		// ExecSync(exLoadCommand, ['pipe', 'pipe', process.stderr]);
+		// ExecSync(exLoadCommand, {stdio: 'inherit'});
+		execSync(exLoadCommand, ['pipe', 'pipe', process.stderr]);
 
 		// TODO: REMOVE after test
 		const test = true;
 		if (test) {
 			// WriteToFile(params.rejectedFile, '', true);
-			writeToFile(params.logFile, '0', true);
+			writeToFile(params.logFile, '0\n1\n2\n3\n4\n5', true);
 		}
 
 		return {status: HttpStatus.OK, message: httpStatus['200_MESSAGE'], id: []};

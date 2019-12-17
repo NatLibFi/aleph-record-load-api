@@ -3,7 +3,6 @@ import {Utils} from '@natlibfi/melinda-commons';
 import HttpStatus from 'http-status';
 import {createWhitelistMiddleware, createAuthMiddleware, createOfflineHoursMiddleware} from './services/middlewareService';
 import bodyParser from 'body-parser';
-
 import {createInputRouter} from './routes';
 
 import {HTTP_PORT, IP_FILTER} from './config';
@@ -31,8 +30,7 @@ async function run() {
 	app.use('/input', await createInputRouter());
 
 	app.use(handleError);
-
-	app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api listening on port ${HTTP_PORT}!`));
+	app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api: listenning port ${HTTP_PORT}`));
 
 	function handleError(err, req, res, next) {
 		if (res.headersSent) {

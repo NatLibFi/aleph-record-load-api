@@ -17,6 +17,10 @@ export function logError(err) {
 // SET default params
 export function setAndCheckDefaultParams(opts) {
 	// Parsing parameters
+	if (opts.startsWith('?')) {
+		opts = opts.substr(1);
+	}
+
 	const pairs = opts.split('&');
 	let temp = {};
 	pairs.forEach(pair => {

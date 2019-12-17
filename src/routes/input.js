@@ -22,7 +22,7 @@ export default async () => {
 
 	async function handleInput(req, res) {
 		logger.log('info', 'input router: handleInput');
-
+		logger.log('debug', `Params ${JSON.stringify(req.params)}`);
 		const params = setAndCheckDefaultParams(req.params.queryString);
 		if (params) {
 			logger.log('info', `input params + set + validation = ${JSON.stringify(params)}`);
@@ -40,7 +40,7 @@ export default async () => {
 					const ids = readFile(params.logFile, true);
 					if (ids) {
 						res.status(response.status).json({ids, QUEUEID: params.QUEUEID}).end(); // Returning QUEUEID if given in parametters, used in notifying priority queue client
-						clearFiles([params.inputFile, params.rejectedFile, params.logFile]);
+						clearFiles([params.rejectedFile, params.logFile]);
 					} else {
 						res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(HttpStatus['500_MESSAGE']).end();
 					}
