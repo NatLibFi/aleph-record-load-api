@@ -42,7 +42,6 @@ $ curl -L -XPOST \
 | mergeRoutine     | No        |               | Merge/Preferred routine                                      |
 | catalogerLevel   | No        |               | Cataloger lever                                              |
 | indexingPriority | No        |               | Override indexing priority                                   |
-| QUEUEID          | No        |               | Used to notify client when priority queued record is created |
 
 ### Example Apache configuration block
 ```

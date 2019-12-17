@@ -48,8 +48,7 @@ export function setAndCheckDefaultParams(opts) {
 		charConversion: temp.charConversion || '',
 		mergeRoutine: temp.mergeRoutine || '',
 		catalogerLevel: temp.catalogerLevel || '',
-		indexingPriority: temp.indexingPriority || '',
-		QUEUEID: temp.QUEUEID || ''
+		indexingPriority: temp.indexingPriority || ''
 	};
 
 	// Validate that all needed variables are there
