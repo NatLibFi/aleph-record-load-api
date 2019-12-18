@@ -1,11 +1,10 @@
 import {logError} from '../utils';
-import {LOAD_COMMAND, ALEPH_VERSION, LOAD_COMMAND_ENV} from '../config';
+import {LOAD_COMMAND, LOAD_COMMAND_ENV} from '../config';
 import {writeToFile} from './fileService';
 import {execSync} from 'child_process';
-import HttpStatus from 'http-status';
 import {Utils} from '@natlibfi/melinda-commons';
+import {clearFiles, checkIfExists, readFile} from '../services/fileService';
 
-import httpStatus from 'http-status';
 const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
 
@@ -20,7 +19,7 @@ export function createRecord(payload, params) {
 			params.library,
 			params.inputFile,
 			params.rejectedFile,
-			params.logFile,
+			params.resultFile,
 			params.method,
 			params.fixRoutine,
 			'',
@@ -41,24 +40,35 @@ export function createRecord(payload, params) {
 		// Close shell
 		// MORE INFO: https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
 		const exLoadCommand = `/usr/bin/env
-					. ${LOAD_COMMAND_ENV.replace(/%s/g, ALEPH_VERSION)}
-					${LOAD_COMMAND.replace(/%s/g, ALEPH_VERSION)} ${values}
+					. ${LOAD_COMMAND_ENV}
+					${LOAD_COMMAND} ${values}
 					exit`;
-		// ExecSync(exLoadCommand, {stdio: 'inherit'});
-		execSync(exLoadCommand, ['pipe', 'pipe', process.stderr]);
+		// To see execSync in action: execSync(exLoadCommand, {stdio: 'inherit'});
+		execSync(exLoadCommand, ['pipe', 'pipe', process.stderr]); // Hides io streams from logs
 
 		// TODO: REMOVE after test
 		const test = true;
 		if (test) {
-			// WriteToFile(params.rejectedFile, '', true);
-			writeToFile(params.logFile, '0\n1\n2\n3\n4\n5', true);
+			// WriteToFile(params.rejectedFile, '', true); // Simulates p_manage_18 failed execution
+			writeToFile(params.resultFile, '0\n1\n2\n3\n4\n5', true); // Simulates p_manage_18 succesfully executed operation
 		}
 
-		return {status: HttpStatus.OK, message: httpStatus['200_MESSAGE'], id: []};
+		if (checkIfExists(params.rejectedFile)) {
+			// TODO Read & log errors from file to pass 'em to Lokit?
+			clearFiles([params.inputFile, params.resultFile]); // Leave error file?
+			return 400;
+		}
+
+		// Get new id/s from result file
+		const ids = readFile(params.resultFile, true);
+		if (ids) {
+			clearFiles([params.inputFile, params.resultFile]);
+			return ids;
+		}
 	} catch (err) {
 		logError(err);
-
-		return {status: HttpStatus.INTERNAL_SERVER_ERROR, message: httpStatus['500_MESSAGE']};
+		clearFiles([params.inputFile, params.rejectedFile, params.resultFile]);
+		return 500;
 	}
 }
 

@@ -21,7 +21,7 @@ export function writeToFile(location, content, createFolders = false) {
 		logger.log('debug', 'writeToFile: Write success');
 	} catch (err) {
 		logger.log('debug', 'writeToFile: Write error');
-		logError(err); // Should be writen in *.rej file?
+		logError(err);
 	}
 }
 
@@ -34,7 +34,7 @@ export function deleteFile(location) {
 		logger.log('debug', 'deleteFile: File deleted!');
 	} catch (err) {
 		logger.log('error', 'deleteFile: Error while tryed delete file!');
-		logError(err); // Should be writen in *.rej file?
+		logError(err);
 	}
 }
 
@@ -49,7 +49,7 @@ export function checkIfExists(location) {
 		return true;
 	} catch (err) {
 		logger.log('debug', 'checkIfExists: File not found');
-		logError(err); // Should be writen in *.rej file?
+		logError(err);
 		return false;
 	}
 }
@@ -69,7 +69,7 @@ export function readFile(location, listStyle = false) {
 		return content;
 	} catch (err) {
 		logger.log('debug', 'readFile: Error while reading file');
-		logError(err); // Should be writen in *.rej file?
+		logError(err);
 		return false;
 	}
 }

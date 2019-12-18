@@ -1,5 +1,5 @@
 import {Utils} from '@natlibfi/melinda-commons';
-import {ALEPH_VERSION, MANDATORY_PARAMETERS, TEMP_FILE_PATH, LOG_FILE_PATH} from './config';
+import {MANDATORY_PARAMETERS, TEMP_FILE_PATH, RESULT_FILE_PATH} from './config';
 import util from 'util';
 import uuid from 'uuid';
 
@@ -14,41 +14,29 @@ export function logError(err) {
 	logger.log('error', err);
 }
 
-// SET default params
-export function setAndCheckDefaultParams(opts) {
-	// Parsing parameters
-	if (opts.startsWith('?')) {
-		opts = opts.substr(1);
-	}
-
-	const pairs = opts.split('&');
-	let temp = {};
-	pairs.forEach(pair => {
-		let [key, value] = pair.split('=');
-		temp[key] = value;
-	});
-
+// Set default params
+export function setAndCheckDefaultParams(query) {
 	// Constructing params Json
-	const id = uuid.v4().replace(/-/g, '');
-	const inputFile = util.format(TEMP_FILE_PATH, ALEPH_VERSION, temp.library, id, '.seq');
-	const rejectedFile = util.format(TEMP_FILE_PATH, ALEPH_VERSION, temp.library, id, '.rej');
-	const logFile = util.format(LOG_FILE_PATH, ALEPH_VERSION, id + '.log');
+	const id = uuid.v4().replace(/-/g, ''); // TODO pass correlationId here?
+	const inputFile = util.format(TEMP_FILE_PATH, query.library, id + '.seq');
+	const rejectedFile = util.format(TEMP_FILE_PATH, query.library, id + '.rej');
+	const resultFile = util.format(RESULT_FILE_PATH, id + '.log');
 
 	const params = {
-		library: temp.library,
-		method: temp.method,
-		cataloger: temp.cataloger,
+		library: query.library,
+		method: query.method,
+		cataloger: query.cataloger,
 		inputFile,
 		rejectedFile,
-		logFile,
-		fixRoutine: temp.fixRoutine || '',
-		indexing: temp.indexing || 'FULL',
-		updateAction: temp.updateAction || 'APP',
-		mode: temp.mode || 'M',
-		charConversion: temp.charConversion || '',
-		mergeRoutine: temp.mergeRoutine || '',
-		catalogerLevel: temp.catalogerLevel || '',
-		indexingPriority: temp.indexingPriority || ''
+		resultFile,
+		fixRoutine: query.fixRoutine || '',
+		indexing: query.indexing || 'FULL',
+		updateAction: query.updateAction || 'APP',
+		mode: query.mode || 'M',
+		charConversion: query.charConversion || '',
+		mergeRoutine: query.mergeRoutine || '',
+		catalogerLevel: query.catalogerLevel || '',
+		indexingPriority: query.indexingPriority || ''
 	};
 
 	// Validate that all needed variables are there
