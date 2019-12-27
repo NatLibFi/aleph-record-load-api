@@ -21,13 +21,13 @@ export default async () => {
 			logger.log('debug', `Query params + set + validation = ${JSON.stringify(params)}`);
 			const payload = req.body;
 			const response = createRecord(payload, params);
-
+			await Promise.all([response]);
 			if (response === 400) {
 				next(new ServiceError(HttpStatus.BAD_REQUEST, HttpStatus['400_MESSAGE']));
 			} else if (response === 500) {
 				next(new ServiceError(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus['500_MESSAGE']));
 			} else {
-				res.status(HttpStatus.OK).json(response).end();
+				res.status(HttpStatus.OK).json(response.ids).end();
 			}
 		} else {
 			next(new ServiceError(HttpStatus.BAD_REQUEST, HttpStatus['400_MESSAGE']));

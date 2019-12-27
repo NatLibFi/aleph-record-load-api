@@ -63,7 +63,7 @@ export function createRecord(payload, params) {
 		const ids = readFile(params.resultFile, true);
 		if (ids) {
 			clearFiles([params.inputFile, params.resultFile]);
-			return ids;
+			return {ids};
 		}
 	} catch (err) {
 		logError(err);
