@@ -7,6 +7,7 @@ import {createInputRouter} from './routes';
 import ServiceError from './services/error';
 
 import {HTTP_PORT} from './config';
+import {logError} from './utils';
 
 const {createLogger, createExpressLogger, handleInterrupt} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
@@ -37,6 +38,6 @@ async function run() {
 			res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		logger.log('error', err.stack);
+		logError(err);
 	}
 }

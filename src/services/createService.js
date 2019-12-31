@@ -47,14 +47,12 @@ export function createRecord(payload, params) {
 		execSync(exLoadCommand, ['pipe', 'pipe', process.stderr]); // Hides io streams from logs
 
 		// TODO: REMOVE after test
-		const test = true;
-		if (test) {
-			// WriteToFile(params.rejectedFile, '', true); // Simulates p_manage_18 failed execution
-			writeToFile(params.resultFile, '0\n1\n2\n3\n4\n5', true); // Simulates p_manage_18 succesfully executed operation
-		}
+		// Test: writeToFile(params.rejectedFile, 'Testing error', true); // Simulates p_manage_18 failed execution
+		writeToFile(params.resultFile, '0\n', true); // Simulates p_manage_18 succesfully executed operation
 
 		if (checkIfExists(params.rejectedFile)) {
-			// TODO Read & log errors from file to pass 'em to Lokit?
+			const errors = readFile(params.rejectedFile, false);
+			logger.log('error', errors);
 			clearFiles([params.inputFile, params.resultFile]); // Leave error file?
 			return 400;
 		}

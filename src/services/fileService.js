@@ -17,7 +17,7 @@ export function writeToFile(location, content, createFolders = false) {
 			logger.log('debug', 'writeToFile: Folders created');
 		}
 
-		fs.writeFileSync(fileLoc, content);
+		fs.writeFileSync(fileLoc, content.trim());
 		logger.log('debug', 'writeToFile: Write success');
 	} catch (err) {
 		logger.log('debug', 'writeToFile: Write error');
@@ -66,7 +66,7 @@ export function readFile(location, listStyle = false) {
 			return content.toString().split(/\r?\n/g);
 		}
 
-		return content;
+		return content.toString();
 	} catch (err) {
 		logger.log('debug', 'readFile: Error while reading file');
 		logError(err);
