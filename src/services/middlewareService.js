@@ -19,7 +19,7 @@ export function createOfflineHoursMiddleware() {
 		}
 
 		if (now.format('x') >= start.format('x') && now.format('x') < end.format('x')) {
-			res.status(HttpStatus.SERVICE_UNAVAILABLE).send(HttpStatus['503_MESSAGE']).end();
+			res.status(HttpStatus.SERVICE_UNAVAILABLE).send(`${HttpStatus['503_MESSAGE']} Offline hours begin at ${begin} and will last next ${duration} hours.`).end();
 		} else {
 			return next();
 		}
