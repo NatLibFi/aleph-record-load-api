@@ -12,7 +12,7 @@ export const RESULT_FILE_PATH = readEnvironmentVariable('RESULT_FILE_PATH');
 // Connection
 export const API_KEYS = readEnvironmentVariable('API_KEYS');
 export const HTTP_PORT = readEnvironmentVariable('HTTP_PORT', {defaultValue: 8080, format: v => Number(v)});
-export const OFFLINE_PERIOD = readEnvironmentVariable('OFFLINE_PERIOD', {defaultValue: '0,0'});
+export const [OFFLINE_BEGIN, OFFLINE_DURATION] = readEnvironmentVariable('OFFLINE_PERIOD', {defaultValue: '0,0'}).split(',');
 
 // General
 export const MANDATORY_PARAMETERS = [
