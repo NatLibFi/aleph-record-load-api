@@ -23,7 +23,7 @@ export default async () => {
 				const payload = req.body;
 				const response = createRecord(payload, params);
 				await Promise.all([response]);
-				if (response === 200) {
+				if (response.status === 200) {
 					res.status(response.status).json(response.ids).end();
 				}
 			} else {

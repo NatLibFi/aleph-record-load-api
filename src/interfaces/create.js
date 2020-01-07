@@ -7,7 +7,6 @@ import {clearFiles, checkIfExists, readFile} from './file';
 import HttpStatus from 'http-status';
 import ApiError from './error';
 
-
 const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
 
