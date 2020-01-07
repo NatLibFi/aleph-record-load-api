@@ -1,15 +1,18 @@
 import {logError} from '../utils';
 import {LOAD_COMMAND, LOAD_COMMAND_ENV} from '../config';
-import {writeToFile} from './fileService';
+import {writeToFile} from './file';
 import {execSync} from 'child_process';
 import {Utils} from '@natlibfi/melinda-commons';
-import {clearFiles, checkIfExists, readFile} from '../services/fileService';
+import {clearFiles, checkIfExists, readFile} from './file';
+import HttpStatus from 'http-status';
+import ApiError from './error';
+
 
 const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export function createRecord(payload, params) {
-	logger.log('info', 'createService: createRecord');
+	logger.log('info', 'create: createRecord');
 
 	try {
 		// Write input file
@@ -54,19 +57,19 @@ export function createRecord(payload, params) {
 			const errors = readFile(params.rejectedFile, false);
 			logger.log('error', errors);
 			clearFiles([params.inputFile, params.resultFile]); // Leave error file?
-			return 400;
+			throw new ApiError(HttpStatus.BAD_REQUEST);
 		}
 
 		// Get new id/s from result file
 		const ids = readFile(params.resultFile, true);
 		if (ids) {
 			clearFiles([params.inputFile, params.resultFile]);
-			return {ids};
+			return {status: HttpStatus.OK, ids};
 		}
 	} catch (err) {
 		logError(err);
 		clearFiles([params.inputFile, params.rejectedFile, params.resultFile]);
-		return 500;
+		throw new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
 

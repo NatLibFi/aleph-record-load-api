@@ -1,10 +1,10 @@
 import express from 'express';
 import {Utils} from '@natlibfi/melinda-commons';
 import HttpStatus from 'http-status';
-import {createAuthMiddleware, createOfflineHoursMiddleware} from './services/middlewareService';
+import {createAuthMiddleware, createOfflineHoursMiddleware} from './interfaces/middleware';
 import bodyParser from 'body-parser';
 import {createInputRouter} from './routes';
-import ServiceError from './services/error';
+import ApiError from './interfaces/error';
 
 import {HTTP_PORT} from './config';
 import {logError} from './utils';
@@ -32,7 +32,7 @@ async function run() {
 	app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api: listenning port ${HTTP_PORT}`));
 
 	function handleError(err, req, res) {
-		if (err instanceof ServiceError) {
+		if (err instanceof ApiError) {
 			res.status(err.status).send(err.payload).end();
 		} else {
 			res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);

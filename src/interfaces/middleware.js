@@ -6,7 +6,7 @@ import {Utils} from '@natlibfi/melinda-commons';
 const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
 
-// Is this needed? Already implemented in Rest-api-importer
+// Needed until the new REST API implementation is in production. Already implemented to Rest-api-importer
 export function createOfflineHoursMiddleware() {
 	return (req, res, next) => {
 		logger.log('info', `Offline hours begin at ${OFFLINE_BEGIN} and will last next ${OFFLINE_DURATION} hours. Time is now ${moment().format('HH:mm')}`);
@@ -18,8 +18,8 @@ export function createOfflineHoursMiddleware() {
 			end.subtract(1, 'days');
 		}
 
-		if (now.format('x') >= start.format('x') && now.format('x') < end.format('x')) {
-			res.status(HttpStatus.SERVICE_UNAVAILABLE).send(`${HttpStatus['503_MESSAGE']} Offline hours begin at ${OFFLINE_BEGIN} and will last next ${OFFLINE_DURATION} hours.`).end();
+		if (now.isBetween(start, end)) {
+			res.status(HttpStatus.SERVICE_UNAVAILABLE).send(`${HttpStatus['503_MESSAGE']} Offline hours begin at ${OFFLINE_BEGIN} and will last next ${OFFLINE_DURATION} hours.`);
 		} else {
 			return next();
 		}
@@ -28,13 +28,15 @@ export function createOfflineHoursMiddleware() {
 
 export function createAuthMiddleware() {
 	return (req, res, next) => {
-		const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-		const [key] = Buffer.from(b64auth, 'base64').toString().split(':');
+		if (req.headers.authorization) {
+			const b64auth = (req.headers.authorization).split(' ')[1] || '';
+			const [key] = Buffer.from(b64auth, 'base64').toString().split(':');
 
-		if (API_KEYS.includes(key)) {
-			return next();
+			if (API_KEYS.includes(key)) {
+				return next();
+			}
 		}
 
-		res.status(HttpStatus.UNAUTHORIZED).send(HttpStatus['401_MESSAGE']).end();
+		res.status(HttpStatus.UNAUTHORIZED).send(HttpStatus['401_MESSAGE']);
 	};
 }
