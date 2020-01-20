@@ -20,50 +20,35 @@ $ curl -L -XPOST \
 |                  |           | e.g. */exlibris/aleph/a23_3/alephm/.cshrc*                                            |                   |
 | API_KEYS         | Yes       | A string array list of API keys which are authorized to use the API,                  | No                |
 |                  |           | e.g. *["Api_key"]*                                                                    |                   |
-| HTTP_PORT        | No        | Http port that program will be listenning,                                            | No                |
-|                  |           | e.g. *8080* Defaults to 8080                                                          |                   |
-| OFFLINE_PERIOD   | No        | Starting hour and length of offline period. Format is `'START_HOUR,LENGTH_IN_HOURS'`, | No                |
-|                  |           | e.g. *'23,3'* Defaults to '0,0'                                                       |                   |
 | TEMP_FILE_PATH   | Yes       | Path of the temporay input data file and error log file,                              | Yes               |
 |                  |           | e.g. */exlibris/aleph/u23_3/%s/scratch/record-load-api/%s* (library, filename)        |                   |
 | RESULT_FILE_PATH | Yes       | Path of the p_manage_18 result output file,                                           | Yes               |
 |                  |           | e.g. */exlibris/aleph/u23_3/alephe/scratch/record-load-api/%s* (file)                 |                   |
+| HTTP_PORT        | No        | Http port that program will be listenning,                                            | No                |
+|                  |           | e.g. *8080* Defaults to 8080                                                          |                   |
+| OFFLINE_PERIOD   | No        | Starting hour and length of offline period. Format is `'START_HOUR,LENGTH_IN_HOURS'`, | No                |
+|                  |           | e.g. *'23,3'* Defaults to '0,0'                                                       |                   |
 *Formate values are shown as %s and explanations can be found in () in order.
 
 ### Query parameters
 | Name             | Mandatory | Default value | Description                                             |
 |------------------|-----------|---------------|---------------------------------------------------------|
+| cataloger        | Yes       |               | Value which is written to *CAT* fields                  |
 | library          | Yes       |               | Library to use                                          |
 | method           | Yes       |               | Method of operation. Either *NEW* or *OLD*              |
-| cataloger        | Yes       |               | Value which is written to *CAT* fields                  |
+| catalogerLevel   | No        |               | Cataloger lever                                         |
+| charConversion   | No        |               | Character conversion to apply                           |
 | fixRoutine       | No        |               | Fix routine to use                                      |
 | indexing         | No        | FULL          | Indexing action                                         |
-| updateAction     | No        | APP           | Update action                                           |
-| mode             | No        | M             | User mode. Either *M* (Multi-user) or *S* (Single-user) |
-| charConversion   | No        |               | Character conversion to apply                           |
-| mergeRoutine     | No        |               | Merge/Preferred routine                                 |
-| catalogerLevel   | No        |               | Cataloger lever                                         |
 | indexingPriority | No        |               | Override indexing priority                              |
+| mergeRoutine     | No        |               | Merge/Preferred routine                                 |
+| mode             | No        | M             | User mode. Either *M* (Multi-user) or *S* (Single-user) |
+| updateAction     | No        | APP           | Update action                                           |
 
-### Example Apache configuration block
+### Example Installation location
 ```
-<Directory "/exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api">
-  Options ExecCGI FollowSymLinks
-  AddHandler cgi-script .cgi
-  DirectoryIndex index.cgi
-  AddDefaultCharset UTF-8
-
-  RewriteEngine on
-  RewriteCond %{HTTP:Authorization} ^(.*)
-  RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
-
-  SetEnv API_KEYS ["<key1>", "<key2>"]
-  SetEnv LOAD_COMMAND /exlibris/aleph/a23_3/aleph/proc/p_manage_18
-  SetEnv LOAD_COMMAND_ENV /exlibris/aleph/a23_3/alephm/.cshrc
-  SetEnv OFFLINE_PERIOD '23,3'
-  SetEnv TEMP_FILE_PATH /exlibris/aleph/u23_3/%s/scratch/record-load-api/%s
-  SetEnv RESULT_FILE_PATH /exlibris/aleph/u23_3/alephe/scratch/record-load-api/s%
-</Directory>
+Directory "/exlibris/linnea/aleph-record-load-api"
+Set enviromental variables
 ```
 
 ## License and copyright
