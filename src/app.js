@@ -1,16 +1,14 @@
 import express from 'express';
-import {Utils} from '@natlibfi/melinda-commons';
+import ApiError, {Utils} from '@natlibfi/melinda-commons';
 import HttpStatus from 'http-status';
 import {createAuthMiddleware, createOfflineHoursMiddleware} from './interfaces/middleware';
 import bodyParser from 'body-parser';
 import {createInputRouter} from './routes';
-import ApiError from './interfaces/error';
 
 import {HTTP_PORT} from './config';
 import {logError} from './utils';
 
 const {createLogger, createExpressLogger, handleInterrupt} = Utils;
-const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 process.on('SIGINT', handleInterrupt);
 process.on('SIGTERM', handleInterrupt);
@@ -18,6 +16,7 @@ process.on('SIGTERM', handleInterrupt);
 run();
 
 async function run() {
+	const logger = createLogger(); // eslint-disable-line no-unused-vars
 	logger.log('info', 'Record-load-api: node version starting');
 
 	const app = express();

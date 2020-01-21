@@ -22,6 +22,7 @@ export function setAndCheckDefaultParams(query) {
 	const rejectedFile = util.format(TEMP_FILE_PATH, query.library, id + '.rej');
 	const resultFile = util.format(RESULT_FILE_PATH, id + '.log');
 
+	// TODO: Ask from Henri do they use any of theis... if they do they need to be exposed in rest-api
 	const params = {
 		library: query.library,
 		method: query.method,

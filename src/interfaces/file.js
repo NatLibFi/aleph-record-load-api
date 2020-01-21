@@ -8,7 +8,7 @@ const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export function writeToFile(location, content, createFolders = false) {
 	const fileLoc = path.resolve(location);
-	logger.log('info', `writeToFile: fileLoc ${fileLoc}`);
+	logger.log('debug', `writeToFile: fileLoc ${fileLoc}`);
 	logger.log('debug', `writeToFile: content ${content}`);
 	try {
 		if (createFolders) {
@@ -20,14 +20,14 @@ export function writeToFile(location, content, createFolders = false) {
 		fs.writeFileSync(fileLoc, content.trim());
 		logger.log('debug', 'writeToFile: Write success');
 	} catch (err) {
-		logger.log('debug', 'writeToFile: Write error');
+		logger.log('error', 'writeToFile: Write error');
 		logError(err);
 	}
 }
 
 export function deleteFile(location) {
 	const fileLoc = path.resolve(location);
-	logger.log('info', `deleteFile: fileLoc ${fileLoc}`);
+	logger.log('debug', `deleteFile: fileLoc ${fileLoc}`);
 
 	try {
 		fs.unlinkSync(fileLoc);
@@ -40,7 +40,7 @@ export function deleteFile(location) {
 
 export function checkIfExists(location) {
 	const fileLoc = path.resolve(location);
-	logger.log('info', `checkIfExists: fileLoc ${fileLoc}`);
+	logger.log('debug', `checkIfExists: fileLoc ${fileLoc}`);
 
 	try {
 		fs.accessSync(fileLoc, fs.constants.F_OK);
@@ -48,7 +48,7 @@ export function checkIfExists(location) {
 		logger.log('debug', 'checkIfExists: File found');
 		return true;
 	} catch (err) {
-		logger.log('debug', 'checkIfExists: File not found');
+		logger.log('error', 'checkIfExists: File not found');
 		logError(err);
 		return false;
 	}
@@ -56,7 +56,7 @@ export function checkIfExists(location) {
 
 export function readFile(location, listStyle = false) {
 	const fileLoc = path.resolve(location);
-	logger.log('info', `readFile: fileLoc ${fileLoc}`);
+	logger.log('debug', `readFile: fileLoc ${fileLoc}`);
 
 	try {
 		const content = fs.readFileSync(fileLoc);
@@ -68,7 +68,7 @@ export function readFile(location, listStyle = false) {
 
 		return content.toString();
 	} catch (err) {
-		logger.log('debug', 'readFile: Error while reading file');
+		logger.log('error', 'readFile: Error while reading file');
 		logError(err);
 		return false;
 	}

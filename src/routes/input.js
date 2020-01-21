@@ -3,13 +3,12 @@ import {Router} from 'express';
 import {setAndCheckDefaultParams} from '../utils';
 import {createRecord} from '../interfaces/create';
 import HttpStatus from 'http-status';
-import ApiError from '../interfaces/error';
-
-import {Utils} from '@natlibfi/melinda-commons';
+import ApiError, {Utils} from '@natlibfi/melinda-commons';
 const {createLogger} = Utils;
-const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export default async () => {
+	const logger = createLogger(); // eslint-disable-line no-unused-vars
+
 	return new Router()
 		.post('/', handleRequest);
 

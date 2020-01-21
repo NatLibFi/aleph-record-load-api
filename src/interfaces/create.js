@@ -2,10 +2,9 @@ import {logError} from '../utils';
 import {LOAD_COMMAND, LOAD_COMMAND_ENV} from '../config';
 import {writeToFile} from './file';
 import {execSync} from 'child_process';
-import {Utils} from '@natlibfi/melinda-commons';
+import ApiError, {Utils} from '@natlibfi/melinda-commons';
 import {clearFiles, checkIfExists, readFile} from './file';
 import HttpStatus from 'http-status';
-import ApiError from './error';
 
 const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
