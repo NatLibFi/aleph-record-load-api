@@ -30,7 +30,7 @@ async function run() {
 	app.use(handleError);
 	app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api: listenning port ${HTTP_PORT}`));
 
-	function handleError(err, req, res) {
+	function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
 		if (err instanceof ApiError) {
 			res.status(err.status).send(err.payload).end();
 		} else {

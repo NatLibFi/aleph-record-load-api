@@ -11,6 +11,7 @@ const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export function createRecord(payload, params) {
 	logger.log('info', 'create: createRecord');
+	console.log();
 
 	try {
 		// Write input file
@@ -54,22 +55,26 @@ export function createRecord(payload, params) {
 
 		logger.log('debug', 'Checking LOAD_COMMAND results');
 
-		if (checkIfExists(params.rejectedFile)) {
-			const errors = readFile(params.rejectedFile, false);
-			logger.log('error', errors);
-			clearFiles([params.inputFile, params.resultFile]); // Leave error file?
-			throw new ApiError(HttpStatus.BAD_REQUEST);
+		if (checkIfExists(params.rejectedFilePath)) {
+			const errors = readFile(params.rejectedFilePath, false);
+			if (errors.length > 0) {
+				logger.log('error', errors);
+				clearFiles([params.inputFile, params.resultFilePath]); // Leave error file?
+				throw new ApiError(HttpStatus.BAD_REQUEST);
+			}
 		}
 
 		// Get new id/s from result file
-		const ids = readFile(params.resultFile, true);
+		const ids = readFile(params.resultFilePath, true);
 		if (ids) {
-			clearFiles([params.inputFile, params.resultFile]);
+			clearFiles([params.inputFile, params.resultFilePath]);
 			return {status: HttpStatus.OK, ids};
 		}
+
+		throw new ApiError(HttpStatus.NOT_ACCEPTABLE, 'Send material produced 0 valid records');
 	} catch (err) {
 		logError(err);
-		clearFiles([params.inputFile, params.rejectedFile, params.resultFile]);
+		clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
 		throw new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

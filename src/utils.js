@@ -18,10 +18,11 @@ export function logError(err) {
 export function setAndCheckDefaultParams(query) {
 	// Constructing params Json
 	const id = uuid.v4().replace(/-/g, ''); // TODO pass correlationId here?
-	const inputFile = util.format(TEMP_FILE_PATH, query.library, id + '.seq');
-	const rejectedFile = util.format(TEMP_FILE_PATH, query.library, id + '.rej');
-	const resultFile = util.format(RESULT_FILE_PATH, id + '.log');
-
+	const inputFile = util.format(TEMP_FILE_PATH, query.library, 'record-load-api/' + id + '.seq');
+	const rejectedFile = 'record-load-api/' + id + '.rej';
+	const resultFile = 'record-load-api/' + id + '.log';
+	const rejectedFilePath = util.format(TEMP_FILE_PATH, query.library, rejectedFile);
+	const resultFilePath = util.format(RESULT_FILE_PATH, resultFile);
 	// TODO: Ask from Henri do they use any of theis... if they do they need to be exposed in rest-api
 	const params = {
 		library: query.library,
@@ -29,7 +30,9 @@ export function setAndCheckDefaultParams(query) {
 		cataloger: query.cataloger,
 		inputFile,
 		rejectedFile,
+		rejectedFilePath,
 		resultFile,
+		resultFilePath,
 		fixRoutine: query.fixRoutine || '',
 		indexing: query.indexing || 'FULL',
 		updateAction: query.updateAction || 'APP',
