@@ -21,6 +21,7 @@ export default async () => {
 				logger.log('debug', `Query params + set + validation = ${JSON.stringify(params)}`);
 				const payload = req.body;
 				const response = createRecord(payload, params);
+				console.log(response);
 				await Promise.all([response]);
 				if (response.status === 200) {
 					res.status(response.status).json(response.ids).end();

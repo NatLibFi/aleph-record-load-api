@@ -9,7 +9,7 @@ const logger = createLogger(); // eslint-disable-line no-unused-vars
 export function writeToFile(location, content, createFolders = false) {
 	const fileLoc = path.resolve(location);
 	logger.log('debug', `writeToFile: fileLoc ${fileLoc}`);
-	logger.log('debug', `writeToFile: content ${content}`);
+	// Spams logger.log('debug', `writeToFile: content ${content}`);
 	try {
 		if (createFolders) {
 			const folders = fileLoc.substring(0, fileLoc.lastIndexOf('/'));

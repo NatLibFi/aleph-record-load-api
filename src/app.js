@@ -34,7 +34,7 @@ async function run() {
 		if (err instanceof ApiError) {
 			res.status(err.status).send(err.payload).end();
 		} else {
-			res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+			res.status(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		logError(err);
