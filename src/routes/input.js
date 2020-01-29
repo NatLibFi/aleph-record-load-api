@@ -25,7 +25,7 @@ export default async () => {
 			await Promise.all([response]);
 			logger.log('debug', response);
 
-			res.status(response.status).json(response.data).end();
+			res.status(response.status).json(response.ids).end();
 
 			// Cleaning
 			clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
