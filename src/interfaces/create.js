@@ -3,7 +3,7 @@ import {LOAD_COMMAND, LOAD_COMMAND_ENV} from '../config';
 import {writeToFile} from './file';
 import {execSync} from 'child_process';
 import ApiError, {Utils} from '@natlibfi/melinda-commons';
-import {clearFiles, checkIfExists, readFile} from './file';
+import {clearFiles, readFile} from './file';
 import HttpStatus from 'http-status';
 
 const {createLogger} = Utils;
@@ -11,7 +11,6 @@ const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export function createRecord(payload, params) {
 	logger.log('info', 'create: createRecord');
-	console.log();
 
 	try {
 		// Write input file
@@ -56,29 +55,21 @@ export function createRecord(payload, params) {
 		// writeToFile(params.rejectedFilePath, '000000000 Testing error\n000000000 Testing error', true);
 
 		logger.log('debug', 'Checking LOAD_COMMAND results');
-		const response = {};
 
-		if (checkIfExists(params.rejectedFilePath)) {
-			// Errors is sequentals of failed records
-			const rejected = readFile(params.rejectedFilePath, false);
-			if (rejected.length > 0) {
-				logger.log('error', 'There is some rejected records');
-				response.data.rejected = rejected;
-			}
+		// Logs if something is found in rejected file
+		const rejected = readFile(params.rejectedFilePath, false);
+		if (rejected.length > 0) {
+			logger.log('error', 'There is something in rejected');
+			logger.log('error', rejected);
 		}
 
 		// Get new id/s from result file (000000001FIN01\n000000002FIN01\n000000003FIN01...) as list (["000000001FIN01","000000002FIN01","000000003FIN01"...])
 		const ids = readFile(params.resultFilePath, true);
-		if (ids) {
-			response.data.ids = ids;
+		if (ids.length > 0) {
+			return {status: HttpStatus.OK, ids};
 		}
 
-		if (response.data.ids !== undefined || response.data.rejected !== undefined) {
-			response.status = HttpStatus.OK;
-			return response;
-		}
-
-		throw new ApiError(HttpStatus.NOT_ACCEPTABLE, 'Send material produced 0 valid or invalid records');
+		throw new ApiError(HttpStatus.NOT_ACCEPTABLE, 'Send material produced 0 valid records');
 	} catch (err) {
 		logError(err);
 		clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
