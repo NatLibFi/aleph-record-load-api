@@ -13,21 +13,3 @@ export const RESULT_FILE_PATH = readEnvironmentVariable('RECORD_LOAD_API_RESULT_
 export const API_KEYS = readEnvironmentVariable('RECORD_LOAD_API_KEYS');
 export const HTTP_PORT = readEnvironmentVariable('RECORD_LOAD_API_HTTP_PORT', {defaultValue: 8080, format: v => Number(v)});
 export const [OFFLINE_BEGIN, OFFLINE_DURATION] = readEnvironmentVariable('RECORD_LOAD_API_OFFLINE_PERIOD', {defaultValue: '0,0', format: v => v.split(',')});
-
-// General
-export const MANDATORY_PARAMETERS = [
-	'library',
-	'method',
-	'cataloger',
-	'inputFile',
-	'rejectedFile',
-	'resultFile',
-	'fixRoutine',
-	'indexing',
-	'updateAction',
-	'mode',
-	'charConversion',
-	'mergeRoutine',
-	'catalogerLevel',
-	'indexingPriority'
-];

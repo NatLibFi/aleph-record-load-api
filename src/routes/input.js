@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 import {Router} from 'express';
-import {setAndCheckDefaultParams} from '../utils';
+import {Utils} from '@natlibfi/melinda-commons';
+import {setParams} from '../utils';
 import {createRecord} from '../interfaces/create';
-import HttpStatus from 'http-status';
-import ApiError, {Utils} from '@natlibfi/melinda-commons';
+import {clearFiles} from '../interfaces/file';
+
 const {createLogger} = Utils;
 
 export default async () => {
@@ -14,21 +15,20 @@ export default async () => {
 
 	async function handleRequest(req, res, next) {
 		try {
-			logger.log('info', 'input router: handleRequest');
+			logger.log('info', 'router: handleRequest');
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);
-			const params = setAndCheckDefaultParams(req.query);
-			if (params) {
-				logger.log('debug', `Query params + set + validation = ${JSON.stringify(params)}`);
-				const payload = req.body;
-				const response = createRecord(payload, params);
-				console.log(response);
-				await Promise.all([response]);
-				if (response.status === 200) {
-					res.status(response.status).json(response.ids).end();
-				}
-			} else {
-				throw new ApiError(HttpStatus.BAD_REQUEST, 'Aleph-record-load-api received invalid query params!');
-			}
+			const params = setParams(req.query);
+
+			logger.log('debug', `Query params set: ${JSON.stringify(params)}`);
+			const payload = req.body;
+			const response = createRecord(payload, params);
+			await Promise.all([response]);
+			logger.log('debug', response);
+
+			res.status(response.status).json(response.data).end();
+
+			// Cleaning
+			clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
 		} catch (error) {
 			next(error);
 		}
