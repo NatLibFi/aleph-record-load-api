@@ -1,7 +1,7 @@
 import {Utils} from '@natlibfi/melinda-commons';
 import {TEMP_FILE_PATH, RESULT_FILE_PATH} from './config';
 import {format} from 'util';
-import {v4 as uuid} from 'uuid';
+import {v4 as uuid} from 'uuid'; // eslint-disable-line no-unused-vars
 
 const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
@@ -25,8 +25,7 @@ http://www.library.mcgill.ca/ALEPH/version16/ALEPH_Release%20Notes-15_2.pdf
 
 // Set params
 export function setParams(query) {
-	//const id = uuid().replace(/-/g, '');
-	const id = query.correlationId;
+	const id = query.correlationId.replace(/-/g, '') || uuid().replace(/-/g, '');
 	const inputFile = format(TEMP_FILE_PATH, query.library, 'record-load-api/' + id + '.seq');
 	const rejectedFile = 'record-load-api/' + id + '.rej';
 	const resultFile = 'record-load-api/' + id + '.log';
