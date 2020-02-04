@@ -28,7 +28,7 @@ export default async () => {
 			res.status(response.status).json(response.ids).end();
 
 			// Cleaning
-			clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
+			// clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
 		} catch (error) {
 			next(error);
 		}

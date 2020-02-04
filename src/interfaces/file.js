@@ -17,7 +17,7 @@ export function writeToFile(location, content, createFolders = false) {
 			logger.log('debug', 'writeToFile: Folders created');
 		}
 
-		fs.writeFileSync(fileLoc, content.trim());
+		fs.writeFileSync(fileLoc, content);
 		logger.log('debug', 'writeToFile: Write success');
 	} catch (err) {
 		logger.log('error', 'writeToFile: Write error');

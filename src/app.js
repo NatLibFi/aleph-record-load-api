@@ -32,7 +32,7 @@ async function run() {
 
 	function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
 		if (err instanceof ApiError) {
-			res.status(err.status).send(err.payload).end();
+			res.status(err.status).send(err.payload);
 		} else {
 			res.status(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

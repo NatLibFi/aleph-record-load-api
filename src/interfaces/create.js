@@ -34,19 +34,23 @@ export function createRecord(payload, params) {
 			params.indexingPriority
 		];
 
-		logger.log('debug', 'Executing LOAD_COMMAND');
+		logger.log('info', 'Executing LOAD_COMMAND');
 
 		// More info about process in bellow: https://nodejs.org/api/child_process.html
 		// SHELL this uses is csh
 		// Load basic env's usr/bin/env
 		// Load custom env variables /exlibris/aleph/a{}/alephm/.cshrc
 		// Run load_command with argument
-		const exLoadCommand = `/usr/bin/env
+		const exLoadCommand = `echo process id: $$
+		sleep 10
+		/usr/bin/env
 		. ${LOAD_COMMAND_ENV}
 		${LOAD_COMMAND} ${values}`;
 
+		// TODO:
+		// spawnSync -> returns pid (process id)
 		// To see execSync in action: stdio: 'inherit' or 'ignore' to stop spamming
-		execSync(exLoadCommand, {stdio: 'ignore', shell: '/bin/csh'});
+		execSync(exLoadCommand, {stdio: 'inherit', shell: '/bin/csh'});
 
 		// To Local testing:
 		// Simulates p_manage_18 succesfully executed operation for one record
@@ -54,7 +58,7 @@ export function createRecord(payload, params) {
 		// Simulates p_manage_18 to judge one record with 2 lines as failed. For example if trying to update record that has allready been marked as deleted.
 		// writeToFile(params.rejectedFilePath, '000000000 Testing error\n000000000 Testing error', true);
 
-		logger.log('debug', 'Checking LOAD_COMMAND results');
+		logger.log('info', 'Checking LOAD_COMMAND results');
 
 		// Logs if something is found in rejected file
 		const rejected = readFile(params.rejectedFilePath, false);

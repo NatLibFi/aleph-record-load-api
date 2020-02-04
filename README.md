@@ -38,12 +38,12 @@ $ curl -L -XPOST \
 | method           | Yes       |               | Method of operation. Either *NEW* or *OLD*              |
 | catalogerLevel   | No        |               | Cataloger lever                                         |
 | charConversion   | No        |               | Character conversion to apply                           |
-| fixRoutine       | No        |               | Fix routine to use                                      |
+| fixRoutine       | No        | API           | Fix routine to use                                      |
 | indexing         | No        | FULL          | Indexing action                                         |
 | indexingPriority | No        |               | Override indexing priority                              |
 | mergeRoutine     | No        |               | Merge/Preferred routine                                 |
 | mode             | No        | M             | User mode. Either *M* (Multi-user) or *S* (Single-user) |
-| updateAction     | No        | APP           | Update action                                           |
+| updateAction     | No        | REP           | Update action                                           |
 
 ### Example Installation location
 ```
