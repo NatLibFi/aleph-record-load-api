@@ -1,7 +1,7 @@
 import {Utils} from '@natlibfi/melinda-commons';
 import {TEMP_FILE_PATH, RESULT_FILE_PATH} from './config';
 import {format} from 'util';
-import {v4 as uuid} from 'uuid'; // eslint-disable-line no-unused-vars
+import {v4 as uuid} from 'uuid';
 
 const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars

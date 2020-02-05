@@ -12,19 +12,20 @@ const logger = createLogger(); // eslint-disable-line no-unused-vars
 export function createRecord(payload, params) {
 	logger.log('info', 'create: createRecord');
 	try {
-		// Update just does double update!
+		// Check if result file exists (e.g. crash has happened)
 		if (params.method === 'NEW' && checkIfExists(params.resultFilePath)) {
 			// Read to array
 			const existingRecords = readFile(params.resultFilePath, true);
-			// Remove file to avoid loop
+			// Remove file to avoid loop (Or if later open other route just to tell clean files of specified id)
 			clearFiles([params.resultFilePath]);
 			// Send allready done part back to importer
 			throw new ApiError(409, existingRecords);
 		}
 
-		// Write input file
+		// Write payload to input file
 		writeToFile(params.inputFile, payload, true);
 
+		// P_manage_18 arguments
 		const values = [
 			params.library,
 			params.inputFile,
@@ -46,6 +47,7 @@ export function createRecord(payload, params) {
 		logger.log('info', 'Executing LOAD_COMMAND');
 
 		// More info about process in bellow: https://nodejs.org/api/child_process.html
+		// Note: If record load api crashes it also kills the child process!
 		// SHELL this uses is csh
 		// Load basic env's usr/bin/env
 		// Load custom env variables /exlibris/aleph/a{}/alephm/.cshrc
@@ -65,7 +67,7 @@ export function createRecord(payload, params) {
 
 		logger.log('info', 'Checking LOAD_COMMAND results');
 
-		// Logs if something is found in rejected file
+		// Logs if something is found in rejected file, do something to it?
 		const rejected = readFile(params.rejectedFilePath, false);
 		if (rejected.length > 0) {
 			logger.log('error', 'There is something in rejected');
@@ -79,11 +81,11 @@ export function createRecord(payload, params) {
 		}
 
 		throw new ApiError(HttpStatus.NOT_ACCEPTABLE, 'Send material produced 0 valid records');
-	} catch (err) {
-		logError(err);
-		clearFiles([params.inputFile, params.rejectedFilePath]);
-		if (err instanceof ApiError) {
-			throw err;
+	} catch (error) {
+		logError(error);
+		clearFiles([params.inputFile, params.rejectedFilePath]); // Leave error log?
+		if (error instanceof ApiError) {
+			throw error;
 		}
 
 		throw new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);

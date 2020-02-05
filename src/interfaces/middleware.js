@@ -9,7 +9,6 @@ const logger = createLogger(); // eslint-disable-line no-unused-vars
 // Needed until the new REST API implementation is in production. Already implemented to Rest-api-importer
 export function createOfflineHoursMiddleware() {
 	return (req, res, next) => {
-		// Test offline hours: logger.log('info', `Offline hours begin at ${OFFLINE_BEGIN} and will last next ${OFFLINE_DURATION} hours. Time is now ${moment().format('HH:mm')}`);
 		const now = moment();
 		const start = moment(now).startOf('day').add(OFFLINE_BEGIN, 'hours');
 		const end = moment(start).add(OFFLINE_DURATION, 'hours');
@@ -38,6 +37,6 @@ export function createAuthMiddleware() {
 			}
 		}
 
-		res.status(HttpStatus.UNAUTHORIZED).send(HttpStatus['401_MESSAGE']);
+		res.status(HttpStatus.UNAUTHORIZED);
 	};
 }

@@ -1,11 +1,10 @@
-import express from 'express';
-import ApiError, {Utils} from '@natlibfi/melinda-commons';
-import HttpStatus from 'http-status';
-import {createAuthMiddleware, createOfflineHoursMiddleware} from './interfaces/middleware';
 import bodyParser from 'body-parser';
-import {createInputRouter} from './routes';
-
+import express from 'express';
+import HttpStatus from 'http-status';
+import ApiError, {Utils} from '@natlibfi/melinda-commons';
 import {HTTP_PORT} from './config';
+import {createAuthMiddleware, createOfflineHoursMiddleware} from './interfaces/middleware';
+import {createInputRouter} from './routes';
 import {logError} from './utils';
 
 const {createLogger, createExpressLogger, handleInterrupt} = Utils;

@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
 import {Router} from 'express';
-import {Utils} from '@natlibfi/melinda-commons';
+import HttpError, {Utils} from '@natlibfi/melinda-commons';
 import {setParams} from '../utils';
 import {createRecord} from '../interfaces/create';
 import {clearFiles} from '../interfaces/file';
@@ -15,6 +14,11 @@ export default async () => {
 
 	async function handleRequest(req, res, next) {
 		try {
+			// Should be changed to application/alephseq?
+			if (req.headers['content-type'] !== 'text/plain') {
+				throw new HttpError(415);
+			}
+
 			logger.log('info', 'router: handleRequest');
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);
 			const params = setParams(req.query);
@@ -28,7 +32,7 @@ export default async () => {
 			res.status(response.status).json(response.ids).end();
 
 			// Cleaning
-			// clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
+			clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
 		} catch (error) {
 			next(error);
 		}

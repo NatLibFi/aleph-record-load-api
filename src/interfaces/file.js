@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-
 import {Utils} from '@natlibfi/melinda-commons';
 import {logError} from '../utils';
+
 const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
 
@@ -13,7 +13,7 @@ export function writeToFile(location, content, createFolders = false) {
 	try {
 		if (createFolders) {
 			const folders = fileLoc.substring(0, fileLoc.lastIndexOf('/'));
-			fs.mkdirSync(folders, {recursive: true}); // Permissions 755 needed?
+			fs.mkdirSync(folders, {recursive: true});
 			logger.log('debug', 'writeToFile: Folders created');
 		}
 
