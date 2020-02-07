@@ -17,9 +17,5 @@ steps:
       from_secret: ssh_key_test
     script:
     - "cd /exlibris/linnea/node-aleph-record-load-api/"
-    - "git clone https://github.com/NatLibFi/aleph-record-load-api"
+    - "git clone https://github.com/NatLibFi/aleph-record-load-api#python-to-node"
     - "npm install"
-  when:
-    branch: [master, test, python-to-node]
-    event: push
-event: [push]
