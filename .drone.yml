@@ -6,6 +6,21 @@ platform:
   arch: amd64
 
 steps:
+- name: deploy
+  image: quay.io/natlibfi/drone-plugin-scp
+  settings:
+    host:
+      from_secret: host_test
+    username:
+      from_secret: username_test
+    key:
+      from_secret: ssh_key_test
+    rm: true
+    source:
+    - "README.md"
+    - "package.json"
+    - "src/*"
+    target: /exlibris/linnea/node-aleph-record-load-api/
 - name: npm install
   image: quay.io/natlibfi/drone-plugin-ssh
   settings:
@@ -17,5 +32,4 @@ steps:
       from_secret: ssh_key_test
     script:
     - "cd /exlibris/linnea/node-aleph-record-load-api/"
-    - "git clone https://github.com/NatLibFi/aleph-record-load-api#python-to-node"
     - "npm install"
