@@ -1,5 +1,3 @@
-# TODO!
----
 kind: pipeline
 name: production
 
@@ -13,50 +11,29 @@ steps:
   settings:
     host:
       from_secret: host_production
+    username:
+      from_secret: username_production
     key:
       from_secret: ssh_key_production
     rm: true
     source:
-    - "*.py"
-    tar_exec: /usr/sfw/bin/gtar
-    target: /exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api/app
-    username:
-      from_secret: username_production
-
-trigger:
-  branch:
-  - master
-  event:
-  - push
-
----
-kind: pipeline
-name: test
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: deploy
-  image: quay.io/natlibfi/drone-plugin-scp
+    - "README.md"
+    - "package.json"
+    - "src/*"
+    target: /exlibris/linnea/node-aleph-record-load-api/
+- name: npm install
+  image: quay.io/natlibfi/drone-plugin-ssh
   settings:
     host:
-      from_secret: host_test
-    key:
-      from_secret: ssh_key_test
-    rm: true
-    source:
-    - "*.py"
-    tar_exec: /usr/sfw/bin/gtar
-    target: /exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api/app
+      from_secret: host_production
     username:
-      from_secret: username_test
-
-trigger:
-  branch:
-  - test
-  event:
-  - push
-
-...
+      from_secret: username_production
+    key:
+      from_secret: ssh_key_production
+    script:
+    - "cd /exlibris/linnea/node-aleph-record-load-api/"
+    - "npm install"
+  when:
+    branch: [master, test, dev]
+    event: push
+event: [push, tag]
