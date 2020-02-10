@@ -32,7 +32,7 @@
     "prod": "NODE_ENV=production npm-run-all clean build app"
   },
   "dependencies": {
-    "@natlibfi/melinda-commons": "git+https://github.com/NatLibFi/melinda-commons-js.git#new-common-class-error",
+    "@natlibfi/melinda-commons": "^7.2.0",
     "body-parser": "^1.19.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",

@@ -2,7 +2,7 @@ import {Router} from 'express';
 import HttpError, {Utils} from '@natlibfi/melinda-commons';
 import {setParams} from '../utils';
 import {createRecord} from '../interfaces/create';
-import {clearFiles} from '../interfaces/file';
+import {clearFiles} from '../interfaces/file'; // eslint-disable-line no-unused-vars
 
 const {createLogger} = Utils;
 
@@ -32,7 +32,7 @@ export default async () => {
 			res.status(response.status).json(response.ids).end();
 
 			// Cleaning
-			clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
+			// clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
 		} catch (error) {
 			next(error);
 		}

@@ -26,10 +26,10 @@ http://www.library.mcgill.ca/ALEPH/version16/ALEPH_Release%20Notes-15_2.pdf
 // Set params
 export function setParams(query) {
 	const id = query.correlationId.replace(/-/g, '') || uuid().replace(/-/g, '');
-	const inputFile = format(TEMP_FILE_PATH, query.library, 'record-load-api/' + id + '.seq');
+	const inputFile = format(TEMP_FILE_PATH, query.library.toLowerCase(), 'record-load-api/' + id + '.seq');
 	const rejectedFile = 'record-load-api/' + id + '.rej';
 	const resultFile = 'record-load-api/' + id + '.log';
-	const rejectedFilePath = format(TEMP_FILE_PATH, query.library, rejectedFile);
+	const rejectedFilePath = format(TEMP_FILE_PATH, query.library.toLower.toLowerCase(), rejectedFile);
 	const resultFilePath = format(RESULT_FILE_PATH, resultFile);
 
 	const params = {

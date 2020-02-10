@@ -32,4 +32,4 @@ steps:
       from_secret: ssh_key_test
     script:
     - "cd /exlibris/linnea/node-aleph-record-load-api/"
-    - "npm install"
+    - "npm install && npm run build"
