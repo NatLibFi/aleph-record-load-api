@@ -42,7 +42,7 @@ trigger:
 
 ---
 kind: pipeline
-name: production
+name: test
 
 platform:
   os: linux
