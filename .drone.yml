@@ -1,3 +1,4 @@
+---
 kind: pipeline
 name: production
 
@@ -33,3 +34,10 @@ steps:
     script:
     - "cd /exlibris/linnea/node-aleph-record-load-api/"
     - "npm install && npm run build"
+trigger:
+  branch:
+  - python-to-node
+  event:
+  - push
+
+...
