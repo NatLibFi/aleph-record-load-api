@@ -77,7 +77,7 @@ export function createRecord(payload, params) {
 
 		// Get new id/s from result file (000000001FIN01\n000000002FIN01\n000000003FIN01...) as list (["000000001FIN01","000000002FIN01","000000003FIN01"...])
 		const ids = readFile(params.resultFilePath, true);
-		writeToFile(params.resultsFilePathAll, ids.join('\n') + '\n', true, true);
+		writeToFile(params.resultFilePathAll, ids.join('\n') + '\n', true, true);
 		if (ids.length > 0) {
 			return {status: HttpStatus.OK, ids};
 		}
