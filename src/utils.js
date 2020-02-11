@@ -29,7 +29,7 @@ export function setParams(query) {
 	const inputFile = format(TEMP_FILE_PATH, query.library.toLowerCase(), 'record-load-api/' + id + '.seq');
 	const rejectedFile = 'record-load-api/' + id + '.rej';
 	const resultFile = 'record-load-api/' + id + '.log';
-	const rejectedFilePath = format(TEMP_FILE_PATH, query.library.toLower.toLowerCase(), rejectedFile);
+	const rejectedFilePath = format(TEMP_FILE_PATH, query.library.toLowerCase(), rejectedFile);
 	const resultFilePath = format(RESULT_FILE_PATH, resultFile);
 	const resultFilePathAll = resultFilePath + '.all';
 	const rejectedFilePathAll = rejectedFilePath + '.all';
