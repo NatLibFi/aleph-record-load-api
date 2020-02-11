@@ -25,12 +25,14 @@ http://www.library.mcgill.ca/ALEPH/version16/ALEPH_Release%20Notes-15_2.pdf
 
 // Set params
 export function setParams(query) {
-	const id = query.correlationId.replace(/-/g, '') || uuid().replace(/-/g, '');
+	const id = (query.correlationId !== undefined) ? query.correlationId.replace(/-/g, '') : uuid().replace(/-/g, '');
 	const inputFile = format(TEMP_FILE_PATH, query.library.toLowerCase(), 'record-load-api/' + id + '.seq');
 	const rejectedFile = 'record-load-api/' + id + '.rej';
 	const resultFile = 'record-load-api/' + id + '.log';
 	const rejectedFilePath = format(TEMP_FILE_PATH, query.library.toLower.toLowerCase(), rejectedFile);
 	const resultFilePath = format(RESULT_FILE_PATH, resultFile);
+	const resultFilePathAll = resultFilePath + '.all';
+	const rejectedFilePathAll = rejectedFilePath + '.all';
 
 	const params = {
 		library: query.library,
@@ -39,8 +41,10 @@ export function setParams(query) {
 		inputFile,
 		rejectedFile,
 		rejectedFilePath,
+		rejectedFilePathAll,
 		resultFile,
 		resultFilePath,
+		resultFilePathAll,
 		fixRoutine: query.fixRoutine || '',
 		indexing: query.indexing || 'FULL',
 		updateAction: query.updateAction || 'APP',

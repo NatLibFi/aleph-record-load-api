@@ -6,7 +6,7 @@ import {logError} from '../utils';
 const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
 
-export function writeToFile(location, content, createFolders = false) {
+export function writeToFile(location, content, createFolders = false, append = false) {
 	const fileLoc = path.resolve(location);
 	logger.log('debug', `writeToFile: fileLoc ${fileLoc}`);
 	// Spams logger.log('debug', `writeToFile: content ${content}`);
@@ -17,7 +17,11 @@ export function writeToFile(location, content, createFolders = false) {
 			logger.log('debug', 'writeToFile: Folders created');
 		}
 
-		fs.writeFileSync(fileLoc, content);
+		if (append) {
+			fs.writeFileSync(fileLoc, content, {flag: 'as'});
+		} else {
+			fs.writeFileSync(fileLoc, content);
+		}
 		logger.log('debug', 'writeToFile: Write success');
 	} catch (err) {
 		logger.log('error', 'writeToFile: Write error');
