@@ -19,7 +19,7 @@ export function createRecord(payload, params) {
 			// Remove file to avoid loop (Or if later open other route just to tell clean files of specified id)
 			clearFiles([params.resultFilePath]);
 			// Send allready done part back to importer
-			throw new ApiError(409, existingRecords);
+			throw new ApiError(HttpStatus.CONFLICT, existingRecords);
 		}
 
 		// Write payload to input file
@@ -67,17 +67,27 @@ export function createRecord(payload, params) {
 
 		logger.log('info', 'Checking LOAD_COMMAND results');
 
-		// Logs if something is found in rejected file, do something to it?
+		// Logs if something is found in rejected file and save it in bulk requests
 		const rejected = readFile(params.rejectedFilePath, false);
-		writeToFile(params.rejectedFilePathAll, rejected, true, true);
+
+		if (params.allRejectedFile !== null) {
+			writeToFile(params.allRejectedFile, rejected, true, true);
+		}
+
 		if (rejected.length > 0) {
 			logger.log('error', 'There is something in rejected');
 			logger.log('error', rejected);
 		}
 
-		// Get new id/s from result file (000000001FIN01\n000000002FIN01\n000000003FIN01...) as list (["000000001FIN01","000000002FIN01","000000003FIN01"...])
+		// Get new id/s from result file (000000001FIN01\n000000002FIN01\n000000003FIN01...)
+		// as list (["000000001FIN01","000000002FIN01","000000003FIN01"...]) and save it if bulk request
 		const ids = readFile(params.resultFilePath, true);
-		writeToFile(params.resultFilePathAll, ids.join('\n'), true, true);
+
+		if (params.allResultFile !== null) {
+			writeToFile(params.allResultFile, ids.join('\n'), true, true);
+		}
+
+		// Return status and ids
 		if (ids.length > 0) {
 			return {status: HttpStatus.OK, ids};
 		}

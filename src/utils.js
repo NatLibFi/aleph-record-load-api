@@ -31,8 +31,8 @@ export function setParams(query) {
 	const resultFile = 'record-load-api/' + id + '.log';
 	const rejectedFilePath = format(TEMP_FILE_PATH, query.library.toLowerCase(), rejectedFile);
 	const resultFilePath = format(RESULT_FILE_PATH, resultFile);
-	const resultFilePathAll = resultFilePath + '.all';
-	const rejectedFilePathAll = rejectedFilePath + '.all';
+	const allResultFile = (query.resultFile !== undefined) ? query.resultFile : null;
+	const allRejectedFile = (query.rejectedFile !== undefined) ? query.rejectedFile : null;
 
 	const params = {
 		library: query.library,
@@ -41,10 +41,10 @@ export function setParams(query) {
 		inputFile,
 		rejectedFile,
 		rejectedFilePath,
-		rejectedFilePathAll,
+		allRejectedFile,
 		resultFile,
 		resultFilePath,
-		resultFilePathAll,
+		allResultFile,
 		fixRoutine: query.fixRoutine || '',
 		indexing: query.indexing || 'FULL',
 		updateAction: query.updateAction || 'APP',
