@@ -22,6 +22,7 @@ export function writeToFile(location, content, createFolders = false, append = f
 		} else {
 			fs.writeFileSync(fileLoc, content);
 		}
+
 		logger.log('debug', 'writeToFile: Write success');
 	} catch (err) {
 		logger.log('error', 'writeToFile: Write error');

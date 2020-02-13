@@ -9,8 +9,8 @@ import HttpStatus from 'http-status';
 const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
 
-export function createRecord(payload, params) {
-	logger.log('info', 'create: createRecord');
+export function execute(payload, params) {
+	logger.log('info', 'excecute');
 	try {
 		// Check if result file exists (e.g. crash has happened)
 		if (params.method === 'NEW' && checkIfExists(params.resultFilePath)) {

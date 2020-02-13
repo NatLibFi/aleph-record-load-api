@@ -1,3 +1,3 @@
-import createInputRouter from './input';
+import createRequestHandler from './requestHandler';
 
-export {createInputRouter};
+export {createRequestHandler};

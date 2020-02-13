@@ -4,7 +4,7 @@ import HttpStatus from 'http-status';
 import ApiError, {Utils} from '@natlibfi/melinda-commons';
 import {HTTP_PORT} from './config';
 import {createAuthMiddleware, createOfflineHoursMiddleware} from './interfaces/middleware';
-import {createInputRouter} from './routes';
+import {createRequestHandler} from './routes';
 import {logError} from './utils';
 
 const {createLogger, createExpressLogger, handleInterrupt} = Utils;
@@ -24,7 +24,7 @@ async function run() {
 	app.use(createOfflineHoursMiddleware());
 	app.use(createAuthMiddleware());
 	app.use(bodyParser.text({limit: '5MB', type: '*/*'}));
-	app.use(await createInputRouter());
+	app.use(await createRequestHandler());
 
 	app.use(handleError);
 	app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api: listenning port ${HTTP_PORT}`));

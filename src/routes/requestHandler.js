@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import HttpError, {Utils} from '@natlibfi/melinda-commons';
 import {setParams} from '../utils';
-import {createRecord} from '../interfaces/create';
+import {execute} from '../interfaces/execute';
 import {clearFiles} from '../interfaces/file'; // eslint-disable-line no-unused-vars
 
 const {createLogger} = Utils;
@@ -25,14 +25,14 @@ export default async () => {
 
 			logger.log('debug', `Query params set: ${JSON.stringify(params)}`);
 			const payload = req.body;
-			const response = createRecord(payload, params);
+			const response = execute(payload, params);
 			await Promise.all([response]);
 			logger.log('debug', response);
 
 			res.status(response.status).json(response.ids).end();
 
 			// Cleaning
-			// clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
+			clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath]);
 		} catch (error) {
 			next(error);
 		}
