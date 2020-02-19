@@ -25,6 +25,8 @@ export async function checkProcessStatus(params) {
 	const processLog = readFile(params.processLogFilePath, true);
 	const lastLine = processLog[processLog.length - 2];
 
+	console.log('last line: ' + lastLine);
+
 	if (lastLine === 'end') {
 		logger.log('info', 'LOAD_COMMAND succesfull');
 		logger.log('info', 'Checking LOAD_COMMAND results');
@@ -59,7 +61,7 @@ export async function checkProcessStatus(params) {
 	}
 
 	// Check if result file exists (e.g. crash has happened)
-	if (params.pOldNew === 'NEW' && checkIfExists(params.resultFilePath)) {
+	if (checkIfExists(params.resultFilePath)) {
 		// Read to array
 		const existingRecords = readFile(params.resultFilePath, true);
 		// Remove file to avoid loop (Or if later open other route just to tell clean files of specified id)
@@ -68,7 +70,6 @@ export async function checkProcessStatus(params) {
 		throw new ApiError(HttpStatus.CONFLICT, existingRecords);
 	}
 
-	clearFiles([params.resultFilePath]);
 	throw new ApiError(HttpStatus.CONFLICT, []);
 }
 
