@@ -24,20 +24,53 @@ http://www.library.mcgill.ca/ALEPH/version16/ALEPH_Release%20Notes-15_2.pdf
 */
 
 // Set params
-export function setParams(query) {
-	const id = (query.correlationId === 'undefined') ? uuid().replace(/-/g, '') : query.correlationId.replace(/-/g, '');
-	const inputFile = format(TEMP_FILE_PATH, query.library.toLowerCase(), 'record-load-api/' + id + '.seq');
-	const rejectedFile = 'record-load-api/' + id + '.rej';
-	const resultFile = 'record-load-api/' + id + '.log';
-	const rejectedFilePath = format(TEMP_FILE_PATH, query.library.toLowerCase(), rejectedFile);
-	const resultFilePath = format(RESULT_FILE_PATH, resultFile);
-	const allResultFile = (query.resultFile === undefined) ? null : query.resultFile;
-	const allRejectedFile = (query.rejectedFile === undefined) ? null : query.rejectedFile;
+export function setExecutionParams(query) {
+	const fileParams = makeFileParams(query);
 
 	const params = {
-		library: query.library,
-		method: query.method,
-		cataloger: query.cataloger,
+		...fileParams,
+		pActiveLibrary: query.pActiveLibrary,
+		pOldNew: query.pOldNew,
+		pFixType: query.pFixType || 'API',
+		pUpdateF: query.pUpdateF || 'FULL',
+		pUpdateType: query.pUpdateType || 'REP',
+		pUpdateMode: query.pUpdateMode || 'M',
+		pCharConv: query.pCharConv || '',
+		pMergeType: query.pMergeType || '',
+		pCatalogerIn: query.pCatalogerIn,
+		pCatalogerLevelX: query.pCatalogerLevelX || '',
+		pZ07PriorityYear: query.pZ07PriorityYear || ''
+	};
+
+	return params;
+}
+
+export function setCheckParams(query) {
+	const fileParams = makeFileParams(query);
+
+	const params = {
+		...fileParams,
+		pActiveLibrary: query.pActiveLibrary,
+		processId: (query.processId.length > 6) ? query.processId.slice(0, 6) : query.processId
+	};
+
+	return params;
+}
+
+function makeFileParams(query) {
+	const id = (query.correlationId === 'undefined') ? uuid().replace(/-/g, '') : query.correlationId.replace(/-/g, '');
+	const inputFile = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), 'record-load-api/' + id + '.seq');
+	const rejectedFile = 'record-load-api/' + id + '.rej';
+	const rejectedFilePath = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), rejectedFile);
+	const resultFile = 'record-load-api/' + id + '.log';
+	const resultFilePath = format(RESULT_FILE_PATH, resultFile);
+	const processLogFile = 'record-load-api/' + id + '.processlog';
+	const processLogFilePath = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), processLogFile);
+	const allResultFile = (query.resultFile === undefined) ? null : query.pLogFile + '.all';
+	const allRejectedFile = (query.rejectedFile === undefined) ? null : query.pRejectFile + '.all';
+
+	const fileParams = {
+		correlationId: id,
 		inputFile,
 		rejectedFile,
 		rejectedFilePath,
@@ -45,15 +78,8 @@ export function setParams(query) {
 		resultFile,
 		resultFilePath,
 		allResultFile,
-		fixRoutine: query.fixRoutine || '',
-		indexing: query.indexing || 'FULL',
-		updateAction: query.updateAction || 'APP',
-		mode: query.mode || 'M',
-		charConversion: query.charConversion || '',
-		mergeRoutine: query.mergeRoutine || '',
-		catalogerLevel: query.catalogerLevel || '',
-		indexingPriority: query.indexingPriority || ''
+		processLogFilePath
 	};
 
-	return params;
+	return fileParams;
 }

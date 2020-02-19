@@ -30,6 +30,10 @@ export function writeToFile(location, content, createFolders = false, append = f
 	}
 }
 
+export function getWriteStream(location) {
+	return fs.createWriteStream(location, {flags: 'a'});
+}
+
 export function deleteFile(location) {
 	const fileLoc = path.resolve(location);
 	logger.log('debug', `deleteFile: fileLoc ${fileLoc}`);
@@ -68,7 +72,12 @@ export function readFile(location, listStyle = false) {
 
 		logger.log('debug', 'readFile: File readed');
 		if (listStyle) {
-			return content.toString().split(/\r?\n/g);
+			const list = content.toString().split(/\r?\n/g);
+			if (list[list.length - 1] === '') {
+				list.pop();
+			}
+
+			return list;
 		}
 
 		return content.toString();

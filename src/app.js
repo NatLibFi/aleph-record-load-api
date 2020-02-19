@@ -3,7 +3,7 @@ import express from 'express';
 import HttpStatus from 'http-status';
 import ApiError, {Utils} from '@natlibfi/melinda-commons';
 import {HTTP_PORT} from './config';
-import {createAuthMiddleware, createOfflineHoursMiddleware} from './interfaces/middleware';
+import {createAuthMiddleware} from './interfaces/middleware';
 import {createRequestHandler} from './routes';
 import {logError} from './utils';
 
@@ -21,7 +21,7 @@ async function run() {
 	const app = express();
 
 	app.use(createExpressLogger());
-	app.use(createOfflineHoursMiddleware());
+	// App.use(createOfflineHoursMiddleware());
 	app.use(createAuthMiddleware());
 	app.use(bodyParser.text({limit: '5MB', type: '*/*'}));
 	app.use(await createRequestHandler());
