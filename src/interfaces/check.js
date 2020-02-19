@@ -26,7 +26,7 @@ export async function checkProcessStatus(params) {
 	const lastLine = processLog[processLog.length - 1];
 	
 
-	console.log(lastLines);
+	console.log(lastLine);
 	if (lastLine.startsWith('end')) {
 		logger.log('info', 'LOAD_COMMAND succesfull');
 		logger.log('info', 'Checking LOAD_COMMAND results');
@@ -45,10 +45,9 @@ export async function checkProcessStatus(params) {
 		// Get id/s from result file (000000001FIN01\n000000002FIN01\n000000003FIN01...)
 		// as list (["000000001FIN01","000000002FIN01","000000003FIN01"...]) and save it if bulk request
 		const ids = readFile(params.resultFilePath, true);
-		console.log(ids);
 
 		// Return status and ids
-		if (ids.length > 0) {
+		if (ids) {
 			if (params.allResultFile !== null) {
 				console.log('writing all log');
 				writeToFile(params.allResultFile, ids.join('\n'), true, true);
