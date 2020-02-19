@@ -23,7 +23,7 @@ export async function checkProcessStatus(params) {
 
 	// Read to array
 	const processLog = readFile(params.processLogFilePath, true);
-	const lastLine = processLog[processLog.length - 1];
+	const lastLine = processLog[processLog.length - 2];
 
 	if (lastLine === 'end') {
 		logger.log('info', 'LOAD_COMMAND succesfull');
@@ -69,7 +69,7 @@ export async function checkProcessStatus(params) {
 	}
 
 	clearFiles([params.resultFilePath]);
-	throw new ApiError(HttpStatus.CONFLICT);
+	throw new ApiError(HttpStatus.CONFLICT, []);
 }
 
 function checkProcess(processId) {
