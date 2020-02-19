@@ -23,21 +23,11 @@ export async function checkProcessStatus(params) {
 
 	// Read to array
 	const processLog = readFile(params.processLogFilePath, true);
-	const lastLines = [
-		processLog[processLog.length - 10],
-		processLog[processLog.length - 9],
-		processLog[processLog.length - 8],
-		processLog[processLog.length - 7],
-		processLog[processLog.length - 6],
-		processLog[processLog.length - 5],
-		processLog[processLog.length - 4],
-		processLog[processLog.length - 3],
-		processLog[processLog.length - 2],
-		processLog[processLog.length - 1]
-	];
+	const lastLine = processLog[processLog.length - 1];
+	
 
 	console.log(lastLines);
-	if (lastLines.includes('end')) {
+	if (lastLine.startsWith('end')) {
 		logger.log('info', 'LOAD_COMMAND succesfull');
 		logger.log('info', 'Checking LOAD_COMMAND results');
 
