@@ -51,7 +51,7 @@ export function setCheckParams(query) {
 	const params = {
 		...fileParams,
 		pActiveLibrary: query.pActiveLibrary,
-		processId: (query.processId.length > 6) ? query.processId.slice(0, 6) : query.processId
+		processId: (query.processId.length > 6) ? query.processId.slice(0, 6) : query.processId // "Sanitize" length of input (HUGE RISK IF NOT DONE!)
 	};
 
 	return params;
@@ -66,8 +66,8 @@ function makeFileParams(query) {
 	const resultFilePath = format(RESULT_FILE_PATH, resultFile);
 	const processLogFile = 'record-load-api/' + id + '.processlog';
 	const processLogFilePath = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), processLogFile);
-	const allResultFile = (query.resultFile === undefined) ? null : query.pLogFile + '.all';
-	const allRejectedFile = (query.rejectedFile === undefined) ? null : query.pRejectFile + '.all';
+	const allResultFile = (query.pLogFile === undefined) ? null : query.pLogFile + '.all';
+	const allRejectedFile = (query.pRejectFile === undefined) ? null : query.pRejectFile + '.all';
 
 	const fileParams = {
 		correlationId: id,

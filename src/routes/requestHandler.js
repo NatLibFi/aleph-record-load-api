@@ -22,7 +22,7 @@ export default async () => {
 
 			// Should be changed to application/alephseq?
 			if (req.headers['content-type'] !== 'text/plain') {
-				throw new HttpError(415);
+				throw new HttpError(httpStatus.UNSUPPORTED_MEDIA_TYPE);
 			}
 
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);
@@ -50,7 +50,7 @@ export default async () => {
 			logger.log('info', 'router: checkProcess');
 
 			if (req.headers['content-type'] !== 'text/plain') {
-				throw new HttpError(415);
+				throw new HttpError(httpStatus.UNSUPPORTED_MEDIA_TYPE);
 			}
 
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);
@@ -58,7 +58,7 @@ export default async () => {
 
 			const response = await checkProcessStatus(params);
 
-			if (response.status === 423) {
+			if (response.status === httpStatus.LOCKED) {
 				return res.sendStatus(httpStatus.LOCKED);
 			}
 
@@ -66,9 +66,6 @@ export default async () => {
 			logger.log('debug', response.toString());
 
 			res.status(response.status).json(response.payload);
-
-			// Cleaning
-			// clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath, params.processLogFilePath]);
 		} catch (error) {
 			next(error);
 		}
@@ -79,7 +76,7 @@ export default async () => {
 			logger.log('info', 'router: checkProcess');
 
 			if (req.headers['content-type'] !== 'text/plain') {
-				throw new HttpError(415);
+				throw new HttpError(httpStatus.UNSUPPORTED_MEDIA_TYPE);
 			}
 
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);
@@ -88,7 +85,7 @@ export default async () => {
 			logger.log('debug', 'response:');
 
 			// Cleaning
-			await clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath, params.processLogFilePath]);
+			clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath, params.processLogFilePath]);
 
 			res.sendStatus(httpStatus.NO_CONTENT);
 		} catch (error) {

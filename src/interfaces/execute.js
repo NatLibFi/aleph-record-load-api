@@ -41,16 +41,12 @@ export function execute(payload, params) {
 		// SHELL this uses is csh
 		// Load basic env's usr/bin/env
 		// Load custom env variables /exlibris/aleph/a{}/alephm/.cshrc
-		// Run load_command with argument
+		// Run load_command with argument and output log to file
 		const exLoadCommand = `/usr/bin/env
 		. ${LOAD_COMMAND_ENV}
-		${LOAD_COMMAND} ${values} >& ${params.processLogFilePath}
-		stop`;
+		${LOAD_COMMAND} ${values} >& ${params.processLogFilePath}`;
 
-		// Working v1
-		// To see execSync in action: stdio: 'inherit' or 'ignore' to stop spamming
-		// execSync(exLoadCommand, {stdio: 'inherit', shell: '/bin/csh'});
-
+		// To see in action: stdio: 'inherit' or 'ignore' to stop spamming
 		const child = spawn(exLoadCommand, [], {
 			detached: true,
 			stdio: ['ignore', 'ignore', 'ignore'],
@@ -61,14 +57,14 @@ export function execute(payload, params) {
 		// To Local testing:
 		// Simulates p_manage_18 succesfully executed operation for one record
 		// writeToFile(params.resultFilePath, '000000000FIN01\n000000001FIN01\n000000002FIN01', true);
-		writeToFile(params.resultFilePath, '000000000FIN01', true);
+		// writeToFile(params.resultFilePath, '000000000FIN01', true);
 		// Simulates p_manage_18 to judge one record with 2 lines as failed. For example if trying to update record that has allready been marked as deleted.
 		// writeToFile(params.rejectedFilePath, '000000000 Testing error\n000000000 Testing error', true);
 
 		return {processId};
 	} catch (error) {
 		logError(error);
-		clearFiles([params.inputFile, params.rejectedFilePath]); // Leave error log?
+		clearFiles([params.inputFile]); // Leave error log?
 		if (error instanceof ApiError) {
 			throw error;
 		}

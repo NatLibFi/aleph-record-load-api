@@ -8,9 +8,8 @@ export async function checkProcessStatus(params) {
 	const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 	logger.log('debug', 'Checking prosess status');
-	// Console.log(params);
+	// SPAMS logger.log(JSON.stringify(params));
 
-	// "Sanitize" length of input (HUGE RISK IF NOT DONE!)
 	const processId = params.processId;
 
 	// Check if process exists
@@ -22,22 +21,25 @@ export async function checkProcessStatus(params) {
 	}
 
 	// Read to array
+	if (!checkIfExists(params.processLogFilePath)) {
+		return {status: 404};
+	}
+
 	const processLog = readFile(params.processLogFilePath, true);
 	const lastLine = processLog[processLog.length - 1];
-	
 
-	console.log(lastLine);
 	if (lastLine.startsWith('end')) {
 		logger.log('info', 'LOAD_COMMAND succesfull');
 		logger.log('info', 'Checking LOAD_COMMAND results');
 
-		// Logs if something is found in rejected file and save it in bulk requests
+		// Logs if something is found in rejected file and saves it to file if log file is given
 		const rejected = readFile(params.rejectedFilePath, false);
 		if (rejected.length > 0) {
 			logger.log('error', 'There is something in rejected');
 			logger.log('error', rejected);
 
 			if (params.allRejectedFile !== null) {
+				logger.log('Writing all error log');
 				writeToFile(params.allRejectedFile, rejected, true, true);
 			}
 		}
@@ -49,7 +51,7 @@ export async function checkProcessStatus(params) {
 		// Return status and ids
 		if (ids) {
 			if (params.allResultFile !== null) {
-				console.log('writing all log');
+				logger.log('Writing all log');
 				writeToFile(params.allResultFile, ids.join('\n'), true, true);
 			}
 
