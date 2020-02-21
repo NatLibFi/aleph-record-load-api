@@ -22,14 +22,14 @@
   "private": true,
   "scripts": {
     "start": "node -r esm ./dist/app",
-    "start:dev": "npm run dev",
+    "start:dev": "babel-node ./src/app",
     "lint": "eslint ./src",
     "lint:dev": "eslint ./src --fix",
-    "app:dev": "babel-node ./app/app",
     "check-deps": "npm-check;exit 0",
     "test": "npm run lint",
     "dev": "NODE_ENV=development cross-env DEBUG=1 nodemon",
-    "build": "babel src --source-maps --copy-files --delete-dir-on-start --out-dir=dist --minified"
+    "build": "babel src --source-maps --copy-files --delete-dir-on-start --out-dir=dist --minified",
+    "prod": "NODE_ENV=production npm run build && npm run start"
   },
   "dependencies": {
     "@natlibfi/melinda-commons": "^7.2.0",
@@ -82,10 +82,11 @@
     ]
   },
   "nodemonConfig": {
-    "exec": "npm run lint:dev && npm run app:dev",
+    "exec": "npm run lint:dev && npm run start:dev",
     "watch": [
       "src/*"
     ],
-    "ext": "js"
+    "ext": "js",
+    "delay": 2.5
   }
 }
