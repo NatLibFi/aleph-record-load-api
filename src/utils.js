@@ -58,7 +58,8 @@ export function setCheckParams(query) {
 }
 
 function makeFileParams(query) {
-	const id = (query.correlationId === 'undefined') ? uuid().replace(/-/g, '') : query.correlationId.replace(/-/g, '');
+	const correlationId = (query.correlationId === 'undefined') ? uuid() : query.correlationId;
+	const id = correlationId.replace(/-/g, '');
 	const inputFile = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), 'record-load-api/' + id + '.seq');
 	const rejectedFile = 'record-load-api/' + id + '.rej';
 	const rejectedFilePath = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), rejectedFile);
@@ -70,7 +71,7 @@ function makeFileParams(query) {
 	const allRejectedFile = (query.pRejectFile === undefined) ? null : query.pRejectFile + '.all';
 
 	const fileParams = {
-		correlationId: id,
+		correlationId,
 		inputFile,
 		rejectedFile,
 		rejectedFilePath,
