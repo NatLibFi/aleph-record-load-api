@@ -1,7 +1,5 @@
 # HTTP API to load records in to Aleph
 
-Trigger drone!
-
 ## Usage
 ### Example request
 ```
