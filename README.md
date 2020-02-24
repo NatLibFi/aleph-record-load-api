@@ -31,23 +31,28 @@ $ curl -L -XPOST \
 *Formate values are shown as %s and explanations can be found in () in order.
 
 ### Query parameters
-| Name             | Mandatory | Default value | Description                                             |
-|------------------|-----------|---------------|---------------------------------------------------------|
-| cataloger        | Yes       |               | Value which is written to *CAT* fields                  |
-| library          | Yes       |               | Library to use                                          |
-| method           | Yes       |               | Method of operation. Either *NEW* or *OLD*              |
-| catalogerLevel   | No        |               | Cataloger lever                                         |
-| charConversion   | No        |               | Character conversion to apply                           |
-| fixRoutine       | No        | API           | Fix routine to use                                      |
-| indexing         | No        | FULL          | Indexing action                                         |
-| indexingPriority | No        |               | Override indexing priority                              |
-| mergeRoutine     | No        |               | Merge/Preferred routine                                 |
-| mode             | No        | M             | User mode. Either *M* (Multi-user) or *S* (Single-user) |
-| updateAction     | No        | REP           | Update action                                           |
+| Name              | Mandatory | Default value | Description                                             |
+|-------------------|-----------|---------------|---------------------------------------------------------|
+| pActiveLibrary    | Yes       | `params`      | Library to use                                          |
+| pInputFile        | No        | `generated`   | Source file location                                    |
+| pRejectFile       | No        | `generated`   | Log file for rejected records                           |
+| pLogFile          | No        | `generated`   | Log file for updated/created record ids                 |
+| pOldNew           | Yes       | `params`      | Method of operation. Either *NEW* or *OLD*              |
+| pFixType          | No        | API           | Fix routine to use                                      |
+| pCheckReferences  | No        |               |                                                         |
+| pUpdateF          | No        | FULL          | Indexing action                                         |
+| pUpdateType       | No        | REP           | Update action                                           |
+| pUpdateMode       | No        | M             | User mode. Either *M* (Multi-user) or *S* (Single-user) |
+| pCharConv         | No        |               | Character conversion to apply                           |
+| pMergeType        | No        |               | Merge/Preferred routine                                 |
+| pCatalogerIn      | Yes       | `params`      | Value which is written to *CAT* fields                  |
+| pCatalogerLevelX  | No        |               | Cataloger lever                                         |
+| pZ07PriorityYear  | No        |               | Override indexing priority                              |
+| pRedirectionField | No        |               |                                                         |
 
 ### Example Installation location
 ```
-Directory "/exlibris/linnea/aleph-record-load-api"
+Directory "/home/user/node-aleph-record-load-api/app"
 Set enviromental variables
 ```
 
