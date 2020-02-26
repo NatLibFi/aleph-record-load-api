@@ -81,7 +81,5 @@ trigger:
   - python-to-node
   - dev
   - test
-  event:
-  - push
 
 ...

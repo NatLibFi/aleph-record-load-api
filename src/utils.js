@@ -1,4 +1,4 @@
-import {Utils} from '@natlibfi/melinda-commons';
+import {Error, Utils} from '@natlibfi/melinda-commons';
 import {TEMP_FILE_PATH, RESULT_FILE_PATH} from './config';
 import {format} from 'util';
 import {v4 as uuid} from 'uuid';
@@ -7,11 +7,17 @@ const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export function logError(err) {
+	if (err instanceof Error) {
+		logger.log('error', JSON.stringify(err, null, '\t'));
+		return;
+	}
+
 	if (err === 'SIGINT') {
 		logger.log('error', err);
-	} else {
-		logger.log('error', 'stack' in err ? err.stack : err);
+		return;
 	}
+
+	logger.log('error', err.stack === undefined ? err : err.stack);
 }
 
 // NOTE:

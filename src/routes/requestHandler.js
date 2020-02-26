@@ -1,7 +1,7 @@
 import {Router} from 'express';
-import HttpError, {Utils} from '@natlibfi/melinda-commons';
+import {Error, Utils} from '@natlibfi/melinda-commons';
 import {setExecutionParams, setCheckParams} from '../utils';
-import {execute} from '../interfaces/execute';
+import loader from '../interfaces/loader';
 import {checkProcessStatus} from '../interfaces/check';
 import {clearFiles} from '../interfaces/file'; // eslint-disable-line no-unused-vars
 import httpStatus from 'http-status';
@@ -10,6 +10,7 @@ const {createLogger} = Utils;
 
 export default async () => {
 	const logger = createLogger(); // eslint-disable-line no-unused-vars
+	const loaderOperator = loader();
 
 	return new Router()
 		.post('/', handleRequest)
@@ -22,7 +23,7 @@ export default async () => {
 
 			// Should be changed to application/alephseq?
 			if (req.headers['content-type'] !== 'text/plain') {
-				throw new HttpError(httpStatus.UNSUPPORTED_MEDIA_TYPE);
+				throw new Error(httpStatus.UNSUPPORTED_MEDIA_TYPE);
 			}
 
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);
@@ -30,14 +31,14 @@ export default async () => {
 
 			logger.log('debug', `Query params set: ${JSON.stringify(params)}`);
 			const payload = req.body;
-			const response = execute(payload, params);
+			const response = loaderOperator.execute(payload, params);
 			await Promise.all([response]);
 
 			// Lets keep correlation id with us! It helps to find process files!
 			response.correlationId = params.correlationId;
 
 			logger.log('debug', 'response:');
-			logger.log('debug', response.toString());
+			logger.log('debug', JSON.stringify(response));
 
 			res.status(httpStatus.OK).json(response);
 		} catch (error) {
@@ -50,7 +51,7 @@ export default async () => {
 			logger.log('info', 'router: checkProcess');
 
 			if (req.headers['content-type'] !== 'text/plain') {
-				throw new HttpError(httpStatus.UNSUPPORTED_MEDIA_TYPE);
+				throw new Error(httpStatus.UNSUPPORTED_MEDIA_TYPE);
 			}
 
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);
@@ -63,7 +64,7 @@ export default async () => {
 			}
 
 			logger.log('debug', 'response:');
-			logger.log('debug', response.toString());
+			logger.log('debug', JSON.stringify(response));
 
 			res.status(response.status).json(response.payload);
 		} catch (error) {
@@ -76,13 +77,11 @@ export default async () => {
 			logger.log('info', 'router: checkProcess');
 
 			if (req.headers['content-type'] !== 'text/plain') {
-				throw new HttpError(httpStatus.UNSUPPORTED_MEDIA_TYPE);
+				throw new Error(httpStatus.UNSUPPORTED_MEDIA_TYPE);
 			}
 
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);
 			const params = setCheckParams(req.query);
-
-			logger.log('debug', 'response:');
 
 			// Cleaning
 			clearFiles([params.inputFile, params.rejectedFilePath, params.resultFilePath, params.processLogFilePath]);

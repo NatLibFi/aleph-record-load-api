@@ -15,18 +15,26 @@ export function writeToFile(location, content, createFolders = false, append = f
 			const folders = fileLoc.substring(0, fileLoc.lastIndexOf('/'));
 			fs.mkdirSync(folders, {recursive: true});
 			logger.log('debug', 'writeToFile: Folders created');
+
+			return write();
 		}
 
-		if (append) {
-			fs.writeFileSync(fileLoc, content, {flag: 'as'});
-		} else {
-			fs.writeFileSync(fileLoc, content);
-		}
-
-		logger.log('debug', 'writeToFile: Write success');
+		return write();
 	} catch (err) {
 		logger.log('error', 'writeToFile: Write error');
 		logError(err);
+	}
+
+	function write() {
+		if (append) {
+			fs.writeFileSync(fileLoc, content, {flag: 'as'});
+			logger.log('debug', 'writeToFile: Write success');
+
+			return;
+		}
+
+		fs.writeFileSync(fileLoc, content);
+		logger.log('debug', 'writeToFile: Write success');
 	}
 }
 
@@ -74,7 +82,8 @@ export function readFile(location, listStyle = false) {
 		if (listStyle) {
 			const list = content.toString().split(/\r?\n/g);
 			if (list[list.length - 1] === '') {
-				list.pop();
+				const spliced = list.splice(0, list.length - 1);
+				return spliced;
 			}
 
 			return list;

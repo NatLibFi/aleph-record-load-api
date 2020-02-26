@@ -10,6 +10,5 @@ export const TEMP_FILE_PATH = readEnvironmentVariable('RECORD_LOAD_API_TEMP_FILE
 export const RESULT_FILE_PATH = readEnvironmentVariable('RECORD_LOAD_API_RESULT_FILE_PATH');
 
 // Connection
-export const API_KEYS = readEnvironmentVariable('RECORD_LOAD_API_KEYS');
+export const API_KEYS = readEnvironmentVariable('RECORD_LOAD_API_KEYS', {format: v => v.split(',')});
 export const HTTP_PORT = readEnvironmentVariable('RECORD_LOAD_API_HTTP_PORT', {defaultValue: 8090, format: v => Number(v)});
-export const [OFFLINE_BEGIN, OFFLINE_DURATION] = readEnvironmentVariable('RECORD_LOAD_API_OFFLINE_PERIOD', {defaultValue: '0,0', format: v => v.split(',')});

@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import HttpStatus from 'http-status';
-import ApiError, {Utils} from '@natlibfi/melinda-commons';
+import {Error, Utils} from '@natlibfi/melinda-commons';
 import {HTTP_PORT} from './config';
 import {createAuthMiddleware} from './interfaces/middleware';
 import {createRequestHandler} from './routes';
@@ -9,19 +9,16 @@ import {logError} from './utils';
 
 const {createLogger, createExpressLogger, handleInterrupt} = Utils;
 
-process.on('SIGINT', handleInterrupt);
-process.on('SIGTERM', handleInterrupt);
-
 run();
 
 async function run() {
+	registerInterruptionHandlers();
 	const logger = createLogger(); // eslint-disable-line no-unused-vars
 	logger.log('info', 'Record-load-api: node version starting');
 
 	const app = express();
 
 	app.use(createExpressLogger());
-	// App.use(createOfflineHoursMiddleware());
 	app.use(createAuthMiddleware());
 	app.use(bodyParser.text({limit: '5MB', type: '*/*'}));
 	app.use(await createRequestHandler());
@@ -30,12 +27,35 @@ async function run() {
 	app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api: listenning port ${HTTP_PORT}`));
 
 	function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
-		if (err instanceof ApiError) {
-			res.status(err.status).json(err.payload);
-		} else {
-			res.status(HttpStatus.INTERNAL_SERVER_ERROR);
+		logError(err);
+		if (err instanceof Error) {
+			return res.status(err.status).json(err.payload);
 		}
 
-		logError(err);
+		return res.status(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+}
+
+function registerInterruptionHandlers() {
+	process
+		.on('SIGTERM', handleSignal)
+		.on('SIGINT', handleInterrupt)
+		.on('uncaughtException', ({stack}) => {
+			handleTermination({code: 1, message: stack});
+		})
+		.on('unhandledRejection', ({stack}) => {
+			handleTermination({code: 1, message: stack});
+		});
+
+	function handleTermination({code = 0, message}) {
+		if (message) {
+			logError(message);
+		}
+
+		process.exit(code);
+	}
+
+	function handleSignal(signal) {
+		handleTermination({code: 1, message: `Received ${signal}`});
 	}
 }
