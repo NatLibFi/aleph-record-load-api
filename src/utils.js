@@ -73,8 +73,8 @@ function makeFileParams(query) {
 	const resultFilePath = format(RESULT_FILE_PATH, resultFile);
 	const processLogFile = 'record-load-api/' + id + '.processlog';
 	const processLogFilePath = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), processLogFile);
-	const allResultFile = (query.pLogFile === undefined) ? null : query.pLogFile + '.all';
-	const allRejectedFile = (query.pRejectFile === undefined) ? null : query.pRejectFile + '.all';
+	const allResultFile = (query.pLogFile === undefined || query.pLogFile === 'null') ? null : (query.pLogFile.endsWith('.all')) ? query.pLogFile : query.pLogFile + '.all';
+	const allRejectedFile = (query.pRejectFile === undefined || query.pRejectFile === 'null') ? null : (query.pLogFile.endsWith('.all')) ? query.pRejectFile : query.pRejectFile + '.all';
 
 	const fileParams = {
 		correlationId,

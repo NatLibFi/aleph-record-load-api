@@ -69,22 +69,24 @@ export async function checkProcessStatus(params) {
 	}
 
 	function handleRejected(rejected) {
+		logger.log('debug', 'Handle rejected!');
 		if (rejected.length > 0) {
 			logger.log('error', 'There is something in rejected');
 			logger.log('error', rejected);
 
 			if (params.allRejectedFile !== null) {
-				logger.log('Writing all error log');
-				writeToFile(params.allRejectedFile, rejected, true, true);
+				logger.log('debug', 'Writing all error log');
+				writeToFile(params.allRejectedFile, rejected + '\n', true, true);
 			}
 		}
 	}
 
 	function handleIds(ids) {
+		logger.log('debug', 'Handle ids!');
 		if (ids) {
 			if (params.allResultFile !== null) {
-				logger.log('Writing all log');
-				writeToFile(params.allResultFile, ids.join('\n'), true, true);
+				logger.log('debug', 'Writing all log');
+				writeToFile(params.allResultFile, ids.join('\n') + '\n', true, true);
 
 				return {status: HttpStatus.OK, payload: ids};
 			}

@@ -36,6 +36,8 @@ export default async () => {
 
 			// Lets keep correlation id with us! It helps to find process files!
 			response.correlationId = params.correlationId;
+			response.pLogFile = params.allResultFile;
+			response.pRejectFile = params.allRejectedFile;
 
 			logger.log('debug', 'response:');
 			logger.log('debug', JSON.stringify(response));
