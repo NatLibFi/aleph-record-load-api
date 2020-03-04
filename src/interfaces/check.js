@@ -77,11 +77,7 @@ export async function checkProcessStatus(params) {
 			if (params.allRejectedFile !== null) {
 				logger.log('debug', 'Writing all error log');
 				writeToFile(params.allRejectedFile, rejected + '\n', true, true);
-
-				return;
 			}
-
-			return;
 		}
 	}
 

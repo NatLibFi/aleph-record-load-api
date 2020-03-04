@@ -48,7 +48,11 @@ function registerInterruptionHandlers() {
 		});
 
 	function handleTermination({code = 0, message}) {
-		(message) ?	logError(message) : null;
+		if (message) {
+			logError(message);
+			process.exit(code);
+		}
+
 		process.exit(code);
 	}
 
