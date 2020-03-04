@@ -1,6 +1,6 @@
 import {spawn} from 'child_process';
 import HttpStatus from 'http-status';
-import {Error, Utils} from '@natlibfi/melinda-commons';
+import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
 import {LOAD_COMMAND, LOAD_COMMAND_ENV} from '../config';
 import {writeToFile, clearFiles} from './file';
 import {logError} from '../utils';
@@ -68,11 +68,11 @@ export default function () {
 		} catch (error) {
 			logError(error);
 			clearFiles([params.inputFile]); // Leave error log?
-			if (error instanceof Error) {
+			if (error instanceof ApiError) {
 				throw error;
 			}
 
-			throw new Error(HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

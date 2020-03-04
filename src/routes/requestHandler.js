@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {Error, Utils} from '@natlibfi/melinda-commons';
+import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
 import {setExecutionParams, setCheckParams} from '../utils';
 import loader from '../interfaces/loader';
 import {checkProcessStatus} from '../interfaces/check';
@@ -23,7 +23,7 @@ export default async () => {
 
 			// Should be changed to application/alephseq?
 			if (req.headers['content-type'] !== 'text/plain') {
-				throw new Error(httpStatus.UNSUPPORTED_MEDIA_TYPE);
+				throw new ApiError(httpStatus.UNSUPPORTED_MEDIA_TYPE);
 			}
 
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);
@@ -53,7 +53,7 @@ export default async () => {
 			logger.log('info', 'router: checkProcess');
 
 			if (req.headers['content-type'] !== 'text/plain') {
-				throw new Error(httpStatus.UNSUPPORTED_MEDIA_TYPE);
+				throw new ApiError(httpStatus.UNSUPPORTED_MEDIA_TYPE);
 			}
 
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);
@@ -79,7 +79,7 @@ export default async () => {
 			logger.log('info', 'router: checkProcess');
 
 			if (req.headers['content-type'] !== 'text/plain') {
-				throw new Error(httpStatus.UNSUPPORTED_MEDIA_TYPE);
+				throw new ApiError(httpStatus.UNSUPPORTED_MEDIA_TYPE);
 			}
 
 			logger.log('debug', `Query ${JSON.stringify(req.query)}`);

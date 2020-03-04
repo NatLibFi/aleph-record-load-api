@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import HttpStatus from 'http-status';
-import {Error, Utils} from '@natlibfi/melinda-commons';
+import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
 import {HTTP_PORT} from './config';
 import {createAuthMiddleware} from './interfaces/middleware';
 import {createRequestHandler} from './routes';
@@ -28,7 +28,7 @@ async function run() {
 
 	function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
 		logError(err);
-		if (err instanceof Error) {
+		if (err instanceof ApiError) {
 			return res.status(err.status).json(err.payload);
 		}
 
@@ -50,6 +50,7 @@ function registerInterruptionHandlers() {
 	function handleTermination({code = 0, message}) {
 		if (message) {
 			logError(message);
+			process.exit(code);
 		}
 
 		process.exit(code);

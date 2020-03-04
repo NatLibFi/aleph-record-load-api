@@ -1,4 +1,4 @@
-import {Error, Utils} from '@natlibfi/melinda-commons';
+import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
 import {readFile, clearFiles, checkIfExists, writeToFile} from './file';
 import {exec} from 'child_process';
 import HttpStatus from 'http-status';
@@ -51,10 +51,10 @@ export async function checkProcessStatus(params) {
 		// Remove file to avoid loop (Or if later open other route just to tell clean files of specified id)
 		clearFiles([params.resultFilePath]);
 		// Send allready done part back to importer
-		throw new Error(HttpStatus.CONFLICT, existingRecords);
+		throw new ApiError(HttpStatus.CONFLICT, existingRecords);
 	}
 
-	throw new Error(HttpStatus.CONFLICT, []);
+	throw new ApiError(HttpStatus.CONFLICT, []);
 
 	function checkProcess(processId) {
 		return new Promise(res => {
@@ -77,7 +77,11 @@ export async function checkProcessStatus(params) {
 			if (params.allRejectedFile !== null) {
 				logger.log('debug', 'Writing all error log');
 				writeToFile(params.allRejectedFile, rejected + '\n', true, true);
+
+				return;
 			}
+
+			return;
 		}
 	}
 
@@ -94,6 +98,6 @@ export async function checkProcessStatus(params) {
 			return {status: HttpStatus.OK, payload: ids};
 		}
 
-		throw new Error(HttpStatus.NOT_ACCEPTABLE, 'Send material produced 0 valid records');
+		throw new ApiError(HttpStatus.NOT_ACCEPTABLE, 'Send material produced 0 valid records');
 	}
 }
