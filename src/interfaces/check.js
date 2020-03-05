@@ -17,12 +17,12 @@ export async function checkProcessStatus(params) {
 	logger.log('debug', `Process found: ${found}`);
 
 	if (found) {
-		return {status: 423};
+		return {status: HttpStatus.LOCKED};
 	}
 
 	// Read to array
 	if (!checkIfExists(params.processLogFilePath)) {
-		return {status: 404};
+		return {status: HttpStatus.NOT_FOUND};
 	}
 
 	const processLog = readFile(params.processLogFilePath, true);
