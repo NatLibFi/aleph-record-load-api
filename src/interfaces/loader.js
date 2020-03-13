@@ -57,8 +57,8 @@ export default function () {
 
 			// To Local testing:
 			// Simulates p_manage_18 succesfully executed operation for one record
-			// WriteToFile(params.resultFilePath, '000000000FIN01\n000000001FIN01\n000000002FIN01', true);
-			// WriteToFile(params.resultFilePath, '000000000FIN01', true);
+			// WriteToFile(params.resultFilePath, '000000000FIN01\n000000001FIN01\n000000002FIN01', true); // Acks 3 messages from queue
+			// WriteToFile(params.resultFilePath, '000000000FIN01', true); // Acks 1 message from queue
 			// WriteToFile(params.rejectedFilePath, '', true); // Rejected file is made but nothing is in it = succes!
 			// Simulates p_manage_18 to judge one record with 2 lines as failed. For example if trying to update record that has allready been marked as deleted.
 			// WriteToFile(params.rejectedFilePath, '000000000 Testing error\n000000000 Testing error', true);
