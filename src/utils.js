@@ -7,17 +7,17 @@ const {createLogger} = Utils;
 const logger = createLogger(); // eslint-disable-line no-unused-vars
 
 export function logError(err) {
-	if (err instanceof ApiError) {
-		logger.log('error', JSON.stringify(err, null, '\t'));
-		return;
-	}
+  if (err instanceof ApiError) {
+    logger.log('error', JSON.stringify(err, null, '\t'));
+    return;
+  }
 
-	if (err === 'SIGINT') {
-		logger.log('error', err);
-		return;
-	}
+  if (err === 'SIGINT') {
+    logger.log('error', err);
+    return;
+  }
 
-	logger.log('error', err.stack === undefined ? err : err.stack);
+  logger.log('error', err.stack === undefined ? err : err.stack);
 }
 
 // NOTE:
@@ -31,62 +31,65 @@ http://www.library.mcgill.ca/ALEPH/version16/ALEPH_Release%20Notes-15_2.pdf
 
 // Set params
 export function setExecutionParams(query) {
-	const fileParams = makeFileParams(query);
+  const fileParams = makeFileParams(query);
 
-	const params = {
-		...fileParams,
-		pActiveLibrary: query.pActiveLibrary,
-		pOldNew: query.pOldNew,
-		pFixType: query.pFixType || 'API',
-		pUpdateF: query.pUpdateF || 'FULL',
-		pUpdateType: query.pUpdateType || 'REP',
-		pUpdateMode: query.pUpdateMode || 'M',
-		pCharConv: query.pCharConv || '',
-		pMergeType: query.pMergeType || '',
-		pCatalogerIn: query.pCatalogerIn,
-		pCatalogerLevelX: query.pCatalogerLevelX || '',
-		pZ07PriorityYear: query.pZ07PriorityYear || ''
-	};
+  const params = {
+    ...fileParams,
+    pActiveLibrary: query.pActiveLibrary,
+    pOldNew: query.pOldNew,
+    pFixType: query.pFixType || 'API',
+    pUpdateF: query.pUpdateF || 'FULL',
+    pUpdateType: query.pUpdateType || 'REP',
+    pUpdateMode: query.pUpdateMode || 'M',
+    pCharConv: query.pCharConv || '',
+    pMergeType: query.pMergeType || '',
+    pCatalogerIn: query.pCatalogerIn,
+    pCatalogerLevelX: query.pCatalogerLevelX || '',
+    pZ07PriorityYear: query.pZ07PriorityYear || ''
+  };
 
-	return params;
+  return params;
 }
 
 export function setCheckParams(query) {
-	const fileParams = makeFileParams(query);
+  const fileParams = makeFileParams(query);
 
-	const params = {
-		...fileParams,
-		pActiveLibrary: query.pActiveLibrary,
-		processId: (query.processId.length > 6) ? query.processId.slice(0, 6) : query.processId // "Sanitize" length of input (HUGE RISK IF NOT DONE!)
-	};
+  const params = {
+    ...fileParams,
+    pActiveLibrary: query.pActiveLibrary,
+    processId: query.processId.length > 6 ? query.processId.slice(0, 6) : query.processId // "Sanitize" length of input (HUGE RISK IF NOT DONE!)
+  };
 
-	return params;
+  return params;
 }
 
 function makeFileParams(query) {
-	const correlationId = (query.correlationId === 'undefined') ? uuid() : query.correlationId;
-	const id = correlationId.replace(/-/g, '');
-	const inputFile = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), 'record-load-api/' + id + '.seq');
-	const rejectedFile = 'record-load-api/' + id + '.rej';
-	const rejectedFilePath = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), rejectedFile);
-	const resultFile = 'record-load-api/' + id + '.log';
-	const resultFilePath = format(RESULT_FILE_PATH, resultFile);
-	const processLogFile = 'record-load-api/' + id + '.processlog';
-	const processLogFilePath = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), processLogFile);
-	const allResultFile = (query.pLogFile === undefined || query.pLogFile === 'null') ? null : (query.pLogFile.endsWith('.all')) ? query.pLogFile : query.pLogFile + '.all';
-	const allRejectedFile = (query.pRejectFile === undefined || query.pRejectFile === 'null') ? null : (query.pLogFile.endsWith('.all')) ? query.pRejectFile : query.pRejectFile + '.all';
+  const correlationId = query.correlationId === 'undefined' ? uuid() : query.correlationId;
+  const id = correlationId.replace(/-/gu, '');
+  const inputFile = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), `record-load-api/${id}.seq`);
+  const rejectedFile = `record-load-api/${id}.rej`;
+  const rejectedFilePath = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), rejectedFile);
+  const resultFile = `record-load-api/${id}.log`;
+  const resultFilePath = format(RESULT_FILE_PATH, resultFile);
+  const processLogFilePath = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), `record-load-api/${id}.processlog`);
 
-	const fileParams = {
-		correlationId,
-		inputFile,
-		rejectedFile,
-		rejectedFilePath,
-		allRejectedFile,
-		resultFile,
-		resultFilePath,
-		allResultFile,
-		processLogFilePath
-	};
+  return {
+    correlationId,
+    inputFile,
+    rejectedFile,
+    rejectedFilePath,
+    allRejectedFile: handleAllFileParam(query.pRejectFile),
+    resultFile,
+    resultFilePath,
+    allResultFile: handleAllFileParam(query.pLogFile),
+    processLogFilePath
+  };
 
-	return fileParams;
+  function handleAllFileParam(param) {
+    if (param === undefined || param === 'null') {
+      return null;
+    }
+
+    return param.endsWith('.all') ? param : `${param}.all`;
+  }
 }
