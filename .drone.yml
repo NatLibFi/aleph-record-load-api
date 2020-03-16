@@ -33,7 +33,7 @@ steps:
       from_secret: ssh_key_production
     script:
     - "cd /exlibris/linnea/node-aleph-record-load-api/app/"
-    - "npm install && npm run build"
+    - "npm install && npm run test && npm run build"
 trigger:
   branch:
   - master
@@ -75,7 +75,7 @@ steps:
       from_secret: ssh_key_test
     script:
     - "cd /exlibris/linnea/node-aleph-record-load-api/app"
-    - "npm install && npm run build"
+    - "npm install && npm run test && npm run build"
 trigger:
   branch:
   - python-to-node
