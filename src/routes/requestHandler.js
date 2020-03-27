@@ -3,7 +3,7 @@ import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
 import {setExecutionParams, setCheckParams} from '../utils';
 import loader from '../interfaces/loader';
 import {checkProcessStatus} from '../interfaces/check';
-import {clearFiles} from '../interfaces/file'; // eslint-disable-line no-unused-vars
+import {clearFiles} from '../interfaces/file';
 import httpStatus from 'http-status';
 
 const {createLogger} = Utils;
