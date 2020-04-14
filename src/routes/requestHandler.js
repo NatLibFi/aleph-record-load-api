@@ -27,13 +27,14 @@ export default () => {
 
       const result = loaderOperator.execute(req.body, params);
       await Promise.all([result]);
+      logger.log('debug', `Process id: ${result}`)
 
       // Lets keep correlation id with us! It helps to find process files!
       const response = {
         correlationId: params.correlationId,
         pLogFile: params.allResultFile,
         pRejectFile: params.allRejectedFile,
-        ...result
+        processId: result
       };
 
       logger.log('debug', `response: ${JSON.stringify(response)}`);
