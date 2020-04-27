@@ -64,7 +64,8 @@ export function setCheckParams(query) {
 }
 
 function makeFileParams(query) {
-  const correlationId = query.correlationId === 'undefined' ? uuid() : query.correlationId;
+  const correlationId = handleCorrelationId(query.correlationId);
+  logger.log('debug', `Setting correlationId ${correlationId}`);
   const id = correlationId.replace(/-/gu, '');
   const inputFile = format(TEMP_FILE_PATH, query.pActiveLibrary.toLowerCase(), `record-load-api/${id}.seq`);
   const rejectedFile = `record-load-api/${id}.rej`;
@@ -84,6 +85,13 @@ function makeFileParams(query) {
     allResultFile: handleAllFileParam(query.pLogFile),
     processLogFilePath
   };
+
+  function handleCorrelationId(querryCorrelationId) {
+    if (querryCorrelationId) {
+      return querryCorrelationId;
+    }
+    return uuid();
+  }
 
   function handleAllFileParam(param) {
     if (param === undefined || param === 'null') {

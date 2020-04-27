@@ -7,7 +7,7 @@ export function createAuthMiddleware() {
   const logger = createLogger(); // eslint-disable-line no-unused-vars
 
   return (req, res, next) => {
-    logger.log('debug', 'Authenticating request');
+    logger.log('verbose', 'Authenticating request');
 
     if (req.headers.authorization) {
       const b64auth = req.headers.authorization.split(' ')[1] || '';

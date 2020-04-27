@@ -36,7 +36,7 @@ export default function () {
         params.pZ07PriorityYear
       ];
 
-      logger.log('info', 'Executing LOAD_COMMAND');
+      logger.log('verbose', 'Executing LOAD_COMMAND');
 
       // More info about process in bellow: https://nodejs.org/api/child_process.html
       // Note: If record load api crashes it also kills the child process!

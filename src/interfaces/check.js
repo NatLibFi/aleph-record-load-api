@@ -7,7 +7,7 @@ export async function checkProcessStatus({processId, processLogFilePath, rejecte
   const {createLogger} = Utils;
   const logger = createLogger(); // eslint-disable-line no-unused-vars
 
-  logger.log('debug', 'Checking prosess status');
+  logger.log('info', 'Checking prosess status');
   // SPAMS logger.log(JSON.stringify(params));
 
   // Check if process exists
@@ -25,8 +25,8 @@ export async function checkProcessStatus({processId, processLogFilePath, rejecte
   logger.log('debug', `Last line of process log: ${lastLine}`);
 
   if (lastLine.startsWith('end')) {
-    logger.log('info', 'LOAD_COMMAND succesfull');
-    logger.log('info', 'Checking LOAD_COMMAND results');
+    logger.log('verbose', 'LOAD_COMMAND succesfull');
+    logger.log('verbose', 'Checking LOAD_COMMAND results');
 
     // Logs if something is found in rejected file and saves it to file if log file is given
     const rejected = readFile(rejectedFilePath, false);
@@ -64,7 +64,7 @@ export async function checkProcessStatus({processId, processLogFilePath, rejecte
   }
 
   function handleRejected(rejected) {
-    logger.log('debug', 'Handle rejected!');
+    logger.log('verbose', 'Handle rejected!');
     if (rejected.length > 0) {
       logger.log('error', 'There is something in rejected');
       logger.log('error', rejected);
@@ -77,7 +77,7 @@ export async function checkProcessStatus({processId, processLogFilePath, rejecte
   }
 
   function handleIds(ids) {
-    logger.log('debug', 'Handle ids!');
+    logger.log('verbose', 'Handle ids!');
     if (ids) {
       if (allResultFile !== null) {
         logger.log('debug', 'Writing all log');
