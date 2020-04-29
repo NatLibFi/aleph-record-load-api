@@ -86,9 +86,9 @@ function makeFileParams(query) {
     processLogFilePath
   };
 
-  function handleCorrelationId(querryCorrelationId) {
-    if (querryCorrelationId) {
-      return querryCorrelationId;
+  function handleCorrelationId(queryCorrelationId) {
+    if (queryCorrelationId && queryCorrelationId !== 'undefined') {
+      return queryCorrelationId;
     }
     return uuid();
   }
