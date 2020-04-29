@@ -4,7 +4,7 @@ import {API_KEYS} from '../config';
 
 export function createAuthMiddleware() {
   const {createLogger} = Utils;
-  const logger = createLogger(); // eslint-disable-line no-unused-vars
+  const logger = createLogger();
 
   return (req, res, next) => {
     logger.log('verbose', 'Authenticating request');

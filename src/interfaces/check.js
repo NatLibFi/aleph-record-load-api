@@ -5,7 +5,7 @@ import HttpStatus from 'http-status';
 
 export async function checkProcessStatus({processId, processLogFilePath, rejectedFilePath, resultFilePath, allRejectedFile, allResultFile}) {
   const {createLogger} = Utils;
-  const logger = createLogger(); // eslint-disable-line no-unused-vars
+  const logger = createLogger();
 
   logger.log('info', 'Checking prosess status');
   // SPAMS logger.log(JSON.stringify(params));

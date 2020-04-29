@@ -9,7 +9,7 @@ import httpStatus from 'http-status';
 const {createLogger} = Utils;
 
 export default () => {
-  const logger = createLogger(); // eslint-disable-line no-unused-vars
+  const logger = createLogger();
   const loaderOperator = loader();
 
   return new Router()

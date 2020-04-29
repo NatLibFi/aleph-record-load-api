@@ -14,7 +14,7 @@ run();
 
 async function run() {
   registerInterruptionHandlers();
-  const logger = createLogger(); // eslint-disable-line no-unused-vars
+  const logger = createLogger();
 
   const app = express();
 
@@ -26,7 +26,7 @@ async function run() {
   app.use(handleError);
   app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api: listenning port ${HTTP_PORT}`));
 
-  function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
+  function handleError(err, req, res) {
     logError(err);
     if (err instanceof ApiError) {
       return res.status(err.status).json(err.payload);

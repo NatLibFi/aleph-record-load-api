@@ -4,7 +4,7 @@ import {Utils} from '@natlibfi/melinda-commons';
 import {logError} from '../utils';
 
 const {createLogger} = Utils;
-const logger = createLogger(); // eslint-disable-line no-unused-vars
+const logger = createLogger();
 
 export function writeToFile(location, content, createFolders = false, append = false) {
   const fileLoc = path.resolve(location);
