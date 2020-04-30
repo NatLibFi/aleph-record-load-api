@@ -48,7 +48,7 @@ steps:
     source:
     - "*.py"
     tar_exec: /usr/sfw/bin/gtar
-    target: /exlibris/aleph/u23_3/alephe/apache/htdocs/aleph-record-load-api/app
+    target: /exlibris/linnea/aleph-record-load-api/app
     username:
       from_secret: username_test
 
