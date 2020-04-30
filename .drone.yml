@@ -47,7 +47,7 @@ steps:
     rm: true
     source:
     - "*.py"
-    tar_exec: /usr/sfw/bin/gtar
+    tar_exec: /bin/gtar
     target: /exlibris/linnea/aleph-record-load-api/app
     username:
       from_secret: username_test
