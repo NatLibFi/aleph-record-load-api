@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import {Utils} from '@natlibfi/melinda-commons';
-import {logError} from '../utils';
+import {logError} from '@natlibfi/melinda-rest-api-commons';
 
 const {createLogger} = Utils;
 const logger = createLogger();

@@ -8,9 +8,9 @@ import httpStatus from 'http-status';
 
 const {createLogger} = Utils;
 
-export default () => {
+export default ({LOAD_COMMAND, LOAD_COMMAND_ENV, TEMP_FILE_PATH, RESULT_FILE_PATH}) => {
   const logger = createLogger();
-  const loaderOperator = loader();
+  const loaderOperator = loader(LOAD_COMMAND, LOAD_COMMAND_ENV);
 
   return new Router()
     .use(contentTypeMiddleware)
@@ -23,7 +23,7 @@ export default () => {
       logger.log('info', 'router: handleRequest');
 
       logger.log('debug', `Query ${JSON.stringify(req.query)}`);
-      const params = setExecutionParams(req.query);
+      const params = setExecutionParams({query: req.query, TEMP_FILE_PATH, RESULT_FILE_PATH});
 
       const result = loaderOperator.execute(req.body, params);
       await Promise.all([result]);
@@ -50,7 +50,7 @@ export default () => {
       logger.log('info', 'router: checkProcess');
 
       logger.log('debug', `Query ${JSON.stringify(req.query)}`);
-      const params = setCheckParams(req.query);
+      const params = setCheckParams({query: req.query, TEMP_FILE_PATH, RESULT_FILE_PATH});
 
       const response = await checkProcessStatus(params);
 
@@ -71,7 +71,7 @@ export default () => {
       logger.log('info', 'router: checkProcess');
 
       logger.log('debug', `Query ${JSON.stringify(req.query)}`);
-      const params = setCheckParams(req.query);
+      const params = setCheckParams({query: req.query, TEMP_FILE_PATH, RESULT_FILE_PATH});
 
       // Cleaning
       clearFiles([

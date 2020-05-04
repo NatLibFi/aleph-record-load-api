@@ -3,28 +3,29 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import HttpStatus from 'http-status';
 import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
-import {HTTP_PORT} from './config';
 import {createAuthMiddleware} from './interfaces/middleware';
 import {createRequestHandler} from './routes';
-import {logError} from './utils';
+import {logError} from '@natlibfi/melinda-rest-api-commons';
 
-const {createLogger, createExpressLogger, handleInterrupt} = Utils;
 
-run();
-
-async function run() {
-  registerInterruptionHandlers();
+export default async function ({HTTP_PORT, API_KEYS, LOAD_COMMAND, LOAD_COMMAND_ENV, TEMP_FILE_PATH, RESULT_FILE_PATH}) {
+  const {createLogger, createExpressLogger} = Utils;
   const logger = createLogger();
+  const app = await initExpress();
+  return app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api: listenning port ${HTTP_PORT}`));
 
-  const app = express();
+  async function initExpress() {
+    const app = express();
 
-  app.use(createExpressLogger());
-  app.use(createAuthMiddleware());
-  app.use(bodyParser.text({limit: '5MB', type: '*/*'}));
-  app.use(await createRequestHandler());
+    app.use(createExpressLogger());
+    app.use(createAuthMiddleware(API_KEYS));
+    app.use(bodyParser.text({limit: '5MB', type: '*/*'}));
+    app.use(await createRequestHandler({LOAD_COMMAND, LOAD_COMMAND_ENV, TEMP_FILE_PATH, RESULT_FILE_PATH}));
 
-  app.use(handleError);
-  app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api: listenning port ${HTTP_PORT}`));
+    app.use(handleError);
+
+    return app;
+  }
 
   function handleError(err, req, res) {
     logError(err);
@@ -33,30 +34,5 @@ async function run() {
     }
 
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-}
-
-function registerInterruptionHandlers() {
-  process
-    .on('SIGTERM', handleSignal)
-    .on('SIGINT', handleInterrupt)
-    .on('uncaughtException', ({stack}) => {
-      handleTermination({code: 1, message: stack});
-    })
-    .on('unhandledRejection', ({stack}) => {
-      handleTermination({code: 1, message: stack});
-    });
-
-  function handleTermination({code = 0, message}) {
-    if (message) { // eslint-disable-line functional/no-conditional-statement
-      logError(message);
-      process.exit(code);
-    }
-
-    process.exit(code);
-  }
-
-  function handleSignal(signal) {
-    handleTermination({code: 1, message: `Received ${signal}`});
   }
 }

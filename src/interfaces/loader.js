@@ -1,11 +1,10 @@
 import {spawn} from 'child_process';
 import HttpStatus from 'http-status';
 import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
-import {LOAD_COMMAND, LOAD_COMMAND_ENV} from '../config';
 import {writeToFile, clearFiles} from './file';
-import {logError} from '../utils';
+import {logError} from '@natlibfi/melinda-rest-api-commons';
 
-export default function () {
+export default function (LOAD_COMMAND, LOAD_COMMAND_ENV) {
   const {createLogger} = Utils;
   const logger = createLogger();
 

@@ -1,25 +1,9 @@
-import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
-import {TEMP_FILE_PATH, RESULT_FILE_PATH} from './config';
+import {Utils} from '@natlibfi/melinda-commons';
 import {format} from 'util';
 import {v4 as uuid} from 'uuid';
 
 const {createLogger} = Utils;
 const logger = createLogger();
-
-export function logError(err) {
-  if (err instanceof ApiError) {
-    logger.log('error', JSON.stringify(err, null, '\t'));
-    return;
-  }
-
-  if (err === 'SIGINT') {
-    logger.log('error', err);
-    return;
-  }
-
-  logger.log('error', err.stack === undefined ? err : err.stack);
-}
-
 // NOTE:
 /*
 The default file names for the output file for rejected records and for the output file for logging system numbers have beenchanged.
@@ -30,8 +14,8 @@ http://www.library.mcgill.ca/ALEPH/version16/ALEPH_Release%20Notes-15_2.pdf
 */
 
 // Set params
-export function setExecutionParams(query) {
-  const fileParams = makeFileParams(query);
+export function setExecutionParams({query, TEMP_FILE_PATH, RESULT_FILE_PATH}) {
+  const fileParams = makeFileParams({query, TEMP_FILE_PATH, RESULT_FILE_PATH});
 
   const params = {
     ...fileParams,
@@ -51,8 +35,8 @@ export function setExecutionParams(query) {
   return params;
 }
 
-export function setCheckParams(query) {
-  const fileParams = makeFileParams(query);
+export function setCheckParams({query, TEMP_FILE_PATH, RESULT_FILE_PATH}) {
+  const fileParams = makeFileParams({query, TEMP_FILE_PATH, RESULT_FILE_PATH});
 
   const params = {
     ...fileParams,
@@ -63,7 +47,7 @@ export function setCheckParams(query) {
   return params;
 }
 
-function makeFileParams(query) {
+function makeFileParams({query, TEMP_FILE_PATH, RESULT_FILE_PATH}) {
   const correlationId = handleCorrelationId(query.correlationId);
   logger.log('debug', `Setting correlationId ${correlationId}`);
   const id = correlationId.replace(/-/gu, '');

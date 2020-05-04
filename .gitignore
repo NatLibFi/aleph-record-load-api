@@ -14,9 +14,6 @@ pids
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 dist/
 
-# Https files
-.ssl/
-
 # Dependency directories
 node_modules/
 
@@ -28,3 +25,4 @@ node_modules/
 
 # dotenv environment variables file
 .env
+

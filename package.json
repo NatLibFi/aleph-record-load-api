@@ -15,13 +15,13 @@
   },
   "license": "AGPL-3.0+",
   "version": "0.0.1",
-  "main": "./dist/app.js",
+  "main": "./dist/index.js",
   "engines": {
     "node": "12"
   },
   "scripts": {
-    "start": "node -r esm ./dist/app",
-    "start:dev": "babel-node ./src/app",
+    "start": "node ./dist/index",
+    "start:dev": "babel-node ./src/index",
     "lint": "eslint ./src",
     "lint:dev": "eslint ./src --fix",
     "check-deps": "npm-check;exit 0",
@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@natlibfi/melinda-commons": "^8.0.0",
+    "@natlibfi/melinda-rest-api-commons": "git+https://github.com/NatLibFi/melinda-rest-api-commons.git#melkehitys-1054",
     "body-parser": "^1.19.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
