@@ -62,7 +62,7 @@ steps:
   image: node:12
   user: node
   commands:
-  - npm npm install --production && npm run build
+  - npm install --production && npm run build
 - name: Deploy
   image: quay.io/natlibfi/drone-plugin-scp
   settings:
