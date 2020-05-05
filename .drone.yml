@@ -49,7 +49,17 @@ platform:
   arch: amd64
 
 steps:
-- name: deploy
+- name: Install & test
+  image: node:12
+  user: node
+  commands:
+  - npm install && npm run test
+- name: Build
+  image: node:12
+  user: node
+  commands:
+  - npm npm install --production && npm run build
+- name: Deploy
   image: quay.io/natlibfi/drone-plugin-scp
   settings:
     host:
@@ -62,20 +72,9 @@ steps:
     source:
     - "README.md"
     - "package.json"
-    - "src/*"
+    - "dist/*"
+    - "node_modules/*"
     target: /exlibris/linnea/node-aleph-record-load-api/app/
-- name: npm install
-  image: quay.io/natlibfi/drone-plugin-ssh
-  settings:
-    host:
-      from_secret: host_test
-    username:
-      from_secret: username_test
-    key:
-      from_secret: ssh_key_test
-    script:
-    - "cd /exlibris/linnea/node-aleph-record-load-api/app"
-    - "npm install && npm run test && npm run build"
 trigger:
   branch:
   - python-to-node
