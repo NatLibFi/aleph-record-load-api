@@ -49,6 +49,10 @@ platform:
   arch: amd64
 
 steps:
+- name: Permissions
+  image: busybox
+  commands:
+  - chmod -R o+w /drone/src
 - name: Install & test
   image: node:12
   user: node
