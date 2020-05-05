@@ -109,15 +109,15 @@ trigger:
 ---
 kind: secret
 name: host_prod
-data: -
+data: '-'
 ---
 kind: secret
 name: username_prod
-data: -
+data: '-'
 ---
 kind: secret
 name: ssh_key_prod
-data: -
+data: '-'
 ---
 kind: secret
 name: host_test
