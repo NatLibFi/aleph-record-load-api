@@ -1,9 +1,11 @@
 ---
 kind: pipeline
 name: production
+
 platform:
   os: linux
   arch: amd64
+
 steps:
 - name: Permissions
   image: busybox
@@ -52,9 +54,11 @@ trigger:
 ---
 kind: pipeline
 name: test
+
 platform:
   os: linux
   arch: amd64
+
 steps:
 - name: Permissions
   image: busybox
