@@ -13,7 +13,7 @@ steps:
   image: busybox
   commands:
   - chmod -R o+w /drone/src
-- name: Install & test
+- name: Install-and-test
   image: node:12
   user: node
   commands:
@@ -39,7 +39,7 @@ steps:
     - "dist/*"
     - "node_modules/*"
     target: /exlibris/linnea/node-aleph-record-load-api/app/
-- name: Restart service
+- name: Restart-service
   image: quay.io/natlibfi/drone-plugin-ssh
   settings:
     host:
