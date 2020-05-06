@@ -32,9 +32,6 @@
     "prod": "NODE_ENV=production npm run build && npm run start"
   },
   "dependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
     "@natlibfi/melinda-commons": "^8.0.0",
     "@natlibfi/melinda-rest-api-commons": "git+https://github.com/NatLibFi/melinda-rest-api-commons.git#melkehitys-1054",
     "body-parser": "^1.19.0",
@@ -44,6 +41,9 @@
     "uuid": "^8.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
     "@babel/node": "^7.8.7",
     "@babel/register": "^7.9.0",
     "@natlibfi/eslint-config-melinda-backend": ">1.0.0-alpha.1",
