@@ -1,4 +1,3 @@
-/* eslint-disable no-process-exit */
 import bodyParser from 'body-parser';
 import express from 'express';
 import HttpStatus from 'http-status';
