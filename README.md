@@ -7,7 +7,7 @@ $ curl -L -XPOST \
 -u "$API_KEY:" \
 -H 'Content-Type: text/plain' \
 --data-binary @records.seq \
-"https://foo.bar/aleph-record-load-api/?library=FOO&method=NEW&fixRoutine=BAR&cataloger=$CATALOGER"
+"https://foo.bar/node-aleph-record-load-api/?library=FOO&method=NEW&fixRoutine=BAR&cataloger=$CATALOGER"
 ["000000001FOO", "000000001FOO"]
 ```
 
@@ -28,6 +28,8 @@ $ curl -L -XPOST \
 |                  |           | e.g. *8080* Defaults to 8080                                                   |                   |
 | OFFLINE_PERIOD   | No        | Starting hour and length of offline period.                                    | No                |
 |                  |           | e.g. *'23,3'* Defaults to '0,0'                                                |                   |
+| LOG_LEVEL        | No        | Level of logged information                                                    | no                |
+|                  |           | e.g. 'debug'                                                                   |                   |
 *Formate values are shown as %s and explanations can be found in () in order.
 
 ### Query parameters
