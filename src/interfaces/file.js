@@ -1,9 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import {Utils} from '@natlibfi/melinda-commons';
+import {createLogger} from '@natlibfi/melinda-backend-commons';
 import {logError} from '@natlibfi/melinda-rest-api-commons';
 
-const {createLogger} = Utils;
 const logger = createLogger();
 
 export function writeToFile(location, content, createFolders = false, append = false) {

@@ -1,8 +1,7 @@
 import HttpStatus from 'http-status';
-import {Utils} from '@natlibfi/melinda-commons';
+import {createLogger} from '@natlibfi/melinda-backend-commons';
 
 export function createAuthMiddleware(API_KEYS) {
-  const {createLogger} = Utils;
   const logger = createLogger();
 
   return (req, res, next) => {

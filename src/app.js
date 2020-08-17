@@ -1,14 +1,14 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import HttpStatus from 'http-status';
-import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
+import {createLogger, createExpressLogger} from '@natlibfi/melinda-backend-commons';
+import {Error as ApiError} from '@natlibfi/melinda-commons';
 import {createAuthMiddleware} from './interfaces/middleware';
 import {createRequestHandler} from './routes';
 import {logError} from '@natlibfi/melinda-rest-api-commons';
 
 
 export default async function ({HTTP_PORT, API_KEYS, LOAD_COMMAND, LOAD_COMMAND_ENV, TEMP_FILE_PATH, RESULT_FILE_PATH}) {
-  const {createLogger, createExpressLogger} = Utils;
   const logger = createLogger();
   const app = await initExpress();
   return app.listen(HTTP_PORT, () => logger.log('info', `Record-load-api: listenning port ${HTTP_PORT}`));

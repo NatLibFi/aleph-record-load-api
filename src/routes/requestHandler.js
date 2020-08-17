@@ -1,12 +1,11 @@
 import {Router} from 'express';
-import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
+import {Error as ApiError} from '@natlibfi/melinda-commons';
 import {setExecutionParams, setCheckParams} from '../utils';
 import loader from '../interfaces/loader';
 import {checkProcessStatus} from '../interfaces/check';
 import {clearFiles} from '../interfaces/file';
 import httpStatus from 'http-status';
-
-const {createLogger} = Utils;
+import {createLogger} from '@natlibfi/melinda-backend-commons';
 
 export default ({LOAD_COMMAND, LOAD_COMMAND_ENV, TEMP_FILE_PATH, RESULT_FILE_PATH}) => {
   const logger = createLogger();

@@ -1,8 +1,7 @@
-import {Utils} from '@natlibfi/melinda-commons';
 import {format} from 'util';
+import {createLogger} from '@natlibfi/melinda-backend-commons';
 import {v4 as uuid} from 'uuid';
 
-const {createLogger} = Utils;
 const logger = createLogger();
 // NOTE:
 /*
@@ -19,7 +18,7 @@ export function setExecutionParams({query, TEMP_FILE_PATH, RESULT_FILE_PATH}) {
 
   const params = {
     ...fileParams,
-    pActiveLibrary: query.pActiveLibrary,
+    pActiveLibrary: query.pActiveLibrary.toUpperCase(),
     pOldNew: query.pOldNew,
     pFixType: query.pFixType || 'API',
     pUpdateF: query.pUpdateF || 'FULL',
@@ -82,6 +81,6 @@ function makeFileParams({query, TEMP_FILE_PATH, RESULT_FILE_PATH}) {
       return null;
     }
 
-    return param.endsWith('.all') ? param : `${param}.all`;
+    return param;
   }
 }
