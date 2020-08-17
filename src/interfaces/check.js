@@ -1,10 +1,10 @@
-import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
+import {createLogger} from '@natlibfi/melinda-backend-commons';
+import {Error as ApiError} from '@natlibfi/melinda-commons';
 import {readFile, clearFiles, checkIfExists, writeToFile} from './file';
 import {exec} from 'child_process';
 import HttpStatus from 'http-status';
 
 export async function checkProcessStatus({processId, processLogFilePath, rejectedFilePath, resultFilePath, allRejectedFile, allResultFile}) {
-  const {createLogger} = Utils;
   const logger = createLogger();
 
   logger.log('info', 'Checking prosess status');

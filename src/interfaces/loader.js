@@ -1,11 +1,11 @@
 import {spawn} from 'child_process';
 import HttpStatus from 'http-status';
-import {Error as ApiError, Utils} from '@natlibfi/melinda-commons';
+import {Error as ApiError} from '@natlibfi/melinda-commons';
 import {writeToFile, clearFiles} from './file';
 import {logError} from '@natlibfi/melinda-rest-api-commons';
+import {createLogger} from '@natlibfi/melinda-backend-commons';
 
 export default function (LOAD_COMMAND, LOAD_COMMAND_ENV) {
-  const {createLogger} = Utils;
   const logger = createLogger();
 
   return {execute};
@@ -36,6 +36,7 @@ export default function (LOAD_COMMAND, LOAD_COMMAND_ENV) {
       ];
 
       logger.log('verbose', 'Executing LOAD_COMMAND');
+      logger.log('debug', `P_manage_18 arguments: ${values}`);
 
       // More info about process in bellow: https://nodejs.org/api/child_process.html
       // Note: If record load api crashes it also kills the child process!

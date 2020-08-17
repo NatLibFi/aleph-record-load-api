@@ -1,6 +1,4 @@
-import {Utils} from '@natlibfi/melinda-commons/';
-
-const {readEnvironmentVariable} = Utils;
+import {readEnvironmentVariable} from '@natlibfi/melinda-backend-commons';
 
 // Files
 export const LOAD_COMMAND = readEnvironmentVariable('RECORD_LOAD_API_LOAD_COMMAND');
