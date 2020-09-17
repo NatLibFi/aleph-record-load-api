@@ -60,17 +60,13 @@ steps:
       strip_components: 1
       target: /exlibris/linnea/aleph-record-load-api/app
       host:
-        #from_secret: host_${DRONE_BRANCH}
-        from_secret: host_test
+        from_secret: host_${DRONE_BRANCH}
       username:
-        #from_secret: username_${DRONE_BRANCH}
-        from_secret: username_test
+        from_secret: username_${DRONE_BRANCH}
       key:
-        #from_secret: ssh_key_${DRONE_BRANCH}
-        from_secret: ssh_key_test
+        from_secret: ssh_key_${DRONE_BRANCH}
     when:
-      #branch: [master, test]
-      branch: [test, fix-drone]
+      branch: [master, test]
 
   - name: restart
     image: quay.io/natlibfi/drone-plugin-ssh
@@ -78,17 +74,13 @@ steps:
       script:
         - kill `systemctl show -p ExecMainPID aleph-record-load-api|cut -f2 -d'='`
       host:
-        #from_secret: host_${DRONE_BRANCH}
-        from_secret: host_test
+        from_secret: host_${DRONE_BRANCH}
       username:
-        #from_secret: username_${DRONE_BRANCH}
-        from_secret: username_test
+        from_secret: username_${DRONE_BRANCH}
       key:
-        #from_secret: ssh_key_${DRONE_BRANCH}
-        from_secret: ssh_key_test
+        from_secret: ssh_key_${DRONE_BRANCH}
     when:
-      #branch: [master, test]
-      branch: [test, fix-drone]
+      branch: [master, test]
 ---
 kind: pipeline
 type: docker
