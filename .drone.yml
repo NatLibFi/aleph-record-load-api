@@ -1,134 +1,130 @@
 ---
+﻿---
 kind: pipeline
-name: production
+type: docker
+name: Default
 
-platform:
-  os: linux
-  arch: amd64
+trigger:
+  event:
+    - push
 
 steps:
-- name: Generate-docker-tags
-  image: quay.io/natlibfi/drone-gen-tags
-- name: Permissions
-  image: busybox
-  commands:
-  - chmod -R o+w /drone/src
-- name: Test-build-install
-  image: node:12
-  user: node
-  commands:
-  - npm install
-  - npm run test
-  - npm run build
-  - rm -rf node_modules/
-  - npm install --production
-- name: Deploy
-  image: quay.io/natlibfi/drone-plugin-scp
-  settings:
-    host:
-      from_secret: host_prod
-    username:
-      from_secret: username_prod
-    key:
-      from_secret: ssh_key_prod
-    rm: true
-    source:
-    - "README.md"
-    - "package.json"
-    - "dist/*"
-    - "node_modules/*"
-    target: /exlibris/linnea/node-aleph-record-load-api/app/
-- name: Restart-service
-  image: quay.io/natlibfi/drone-plugin-ssh
-  settings:
-    host:
-      from_secret: host_prod
-    username:
-      from_secret: username_prod
-    key:
-      from_secret: ssh_key_prod
-    script:
-    - "echo 'Restarting node aleph-record-load-api'"
-trigger:
-  branch:
-  - master
+
+  - name: generate-tags
+    image: quay.io/natlibfi/drone-gen-tags
+
+  - name: audit
+    image: node:12
+    commands:
+      - npm audit --package-lock-only --production --audit-level=moderate
+
+  - name: install
+    image: node:12
+    commands:
+      - npm ci
+    environment:
+      NPM_CONFIG_IGNORE_SCRIPTS: true
+
+  - name: test
+    image: node:12
+    commands:
+      - npm test
+
+  - name: check-coverage
+    image: node:12
+    commands:
+      - npm run coverage
+
+  - name: build
+    image: node:12
+    commands:
+      - npm run build
+      - NPM_CONFIG_IGNORE_SCRIPTS=true npm ci --production
+
+  - name: static-security-scan
+    image: quay.io/natlibfi/njsscan
+    commands:
+      - njsscan dist
+
+  - name: prepare-for-deploy
+    image: busybox:1
+    commands:
+      - mv node_modules dist/
+
+  - name: deploy
+    image: quay.io/natlibfi/drone-plugin-scp
+    settings:
+      rm: true
+      source: ['dist/**']
+      strip_components: 1
+      target: /exlibris/linnea/aleph-record-load-api/app
+      host:
+        from_secret: host_${DRONE_BRANCH}
+      username:
+        from_secret: username_${DRONE_BRANCH}
+      key:
+    when:
+      #branch: [master, test]
+      branch: [test, fix-drone]
+
+  - name: restart
+    image: quay.io/natlibfi/drone-plugin-ssh
+    settings:
+      script:
+        - kill `systemctl show -p ExecMainPID aleph-record-load-api|cut -f2 -d'='`
+      host:
+        from_secret: host_${DRONE_BRANCH}
+      username:
+        from_secret: username_${DRONE_BRANCH}
+      key:
+        from_secret: ssh_key_${DRONE_BRANCH}
+    when:
+      #branch: [master, test]
+      branch: [test, fix-drone]
 ---
 kind: pipeline
-name: test
+type: docker
+name: Update dependencies
 
-platform:
-  os: linux
-  arch: amd64
+trigger:
+  event:
+    - custom
+  branch:
+    - master
 
 steps:
-- name: Generate-docker-tags
-  image: quay.io/natlibfi/drone-gen-tags
-- name: Permissions
-  image: busybox
-  commands:
-  - chmod -R o+w /drone/src
-- name: Test-build-install
-  image: node:12
-  user: node
-  commands:
-  - npm install
-  - npm run test
-  - npm run build
-  - rm -rf node_modules/
-  - npm install --production
-- name: Deploy
-  image: quay.io/natlibfi/drone-plugin-scp
-  settings:
-    host:
-      from_secret: host_test
-    username:
-      from_secret: username_test
-    key:
-      from_secret: ssh_key_test
-    rm: true
-    source:
-    - "README.md"
-    - "package.json"
-    - "dist/*"
-    - "node_modules/*"
-    target: /exlibris/linnea/node-aleph-record-load-api/app/
-- name: Restart-service
-  image: quay.io/natlibfi/drone-plugin-ssh
-  settings:
-    host:
-      from_secret: host_test
-    username:
-      from_secret: username_test
-    key:
-      from_secret: ssh_key_test
-    script:
-    - "echo 'Restarting node aleph-record-load-api'"
-trigger:
-  branch:
-  - dev
-  - test
+
+  - name: publish
+    image: quay.io/natlibfi/drone-npm-git-publish
+    settings:
+      git_user_name: natlibfi-melinda-automation
+      git_user_email: 65649125+natlibfi-melinda-automation@users.noreply.github.com
+      git_ssh_key:
+        from_secret: ssh_key
+      git_gpg_key:
+        from_secret: gpg_key
 ---
 kind: secret
-name: host_prod
-data: '-'
+name: ssh_key
+data: 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
 ---
 kind: secret
-name: username_prod
-data: '-'
----
-kind: secret
-name: ssh_key_prod
-data: '-'
----
-kind: secret
-name: host_test
-data: wTd7hNNzXvIAbcLcdh+v2nJah6v+FaqzW+lh1JGsIneq8uC6iDwFOezZkwwm
+name: gpg_key
+data: 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
 ---
 kind: secret
 name: username_test
-data: m5NHENJ7mevnkpbyMjOrrB7XJMet55n8p6FRKeom4BYa
+data: Xls523dLlbEhiYUvk2XNrg73xl0uqbuClPoM9Shybl/R
+---
+kind: secret
+name: host_test
+data: blCGyd0XCLeJNqPxOSM1pvDiBXwXVPOuLxOESK9z4U5Kvc8b5g5rXyVN0VTI
 ---
 kind: secret
 name: ssh_key_test
-data: 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
+data: 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
+---
+kind: signature
+hmac: 0a747611c527e65f48dffdde7c193ee2efdd753cf2a452d628122126c6602fca
+
 ...

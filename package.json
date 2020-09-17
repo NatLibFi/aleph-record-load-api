@@ -33,9 +33,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@natlibfi/melinda-commons": "^9.0.0",
-    "@natlibfi/melinda-rest-api-commons": ">=1.0.0-alpha.4",
-    "@natlibfi/melinda-backend-commons": "^1.0.4",
+    "@natlibfi/melinda-backend-commons": "^1.0.6",
+    "@natlibfi/melinda-commons": "^11.0.1",
+    "@natlibfi/melinda-rest-api-commons": "^1.0.0-alpha.1",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "http-status": "^1.4.2",
@@ -43,16 +43,15 @@
     "uuid": "^8.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
+    "@babel/cli": "^7.11.6",
     "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
     "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.6",
     "@babel/register": "^7.9.0",
-    "@natlibfi/eslint-config-melinda-backend": ">1.0.0-alpha.1",
+    "@natlibfi/eslint-config-melinda-backend": "^1.0.5",
     "babel-eslint": "^10.1.0",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
-    "eslint-plugin-import": "^2.20.2",
     "nodemon": "^2.0.3",
     "npm-check": "^5.9.2"
   },
