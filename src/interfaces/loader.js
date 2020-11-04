@@ -14,6 +14,7 @@ export default function (LOAD_COMMAND, LOAD_COMMAND_ENV) {
     logger.log('info', 'Excecuting payload');
     try {
       // Write payload to input file
+      clearFiles([params.inputFile]);
       writeToFile(params.inputFile, payload, true);
 
       // P_manage_18 arguments
